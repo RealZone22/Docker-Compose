@@ -1,0 +1,44 @@
+services:
+  app:
+    image: nextcloud
+    restart: always
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - 'http://127.0.0.1:80'
+    volumes:
+      - ./nextcloud:/var/www/html
+    env_file: .env
+    networks:
+      nextcloud:
+        ipv4_address: 10.3.0.2
+      databases:
+    container_name: NextCloud
+
+  cron:
+    depends_on:
+      - redis
+      - app
+    image: nextcloud
+    restart: unless-stopped
+    volumes:
+      - ./nextcloud:/var/www/html
+    entrypoint: /cron.sh
+    networks:
+      databases:
+      nextcloud:
+        ipv4_address: 10.3.0.3
+    container_name: NextCloud-Cron
+
+networks:
+  nextcloud:
+    name: NextCloud
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.3.0.0/16
+         gateway: 10.3.0.1
+  databases:
+    external: true

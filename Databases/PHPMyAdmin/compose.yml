@@ -1,0 +1,19 @@
+services:
+  phpmyadmin:
+    image: lscr.io/linuxserver/phpmyadmin:latest
+    env_file: '.env'
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - 'http://127.0.0.1:80'
+    networks:
+      databases:
+        ipv4_address: 10.2.0.253
+    restart: unless-stopped
+    container_name: PHPMyAdmin
+
+networks:
+  databases:
+    external: true
