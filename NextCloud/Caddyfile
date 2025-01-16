@@ -1,9 +1,0 @@
-<YOUR_DOMAIN> {
-    redir /.well-known/carddav /remote.php/dav/ 301
-    redir /.well-known/caldav /remote.php/dav/ 301
-
-    reverse_proxy 10.3.0.2:80 {
-        header_up X-Forwarded-Host {host}
-        header_down Strict-Transport-Security "max-age=15552000; includeSubDomains; preload"
-    }
-}
