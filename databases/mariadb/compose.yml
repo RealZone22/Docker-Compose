@@ -1,0 +1,23 @@
+services:
+  mariadb:
+    container_name: ctr-mariadb
+    image: mariadb
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data:/var/lib/mysql
+    networks:
+      databases:
+        ipv4_address: 10.1.6.254
+
+networks:
+  databases:
+    name: net-databases
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.6.0/24
+         gateway: 10.1.6.1
+  

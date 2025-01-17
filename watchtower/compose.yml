@@ -1,0 +1,20 @@
+services:
+  watchtower:
+    container_name: ctr-watchtower
+    image: containrrr/watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/docker.sock:/var/run/docker.sock
+    networks:
+      watchtower:
+        ipv4_address: 10.1.7.2
+
+networks:
+  watchtower:
+    name: net-watchtower
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.7.0/24
+         gateway: 10.1.7.1
+  

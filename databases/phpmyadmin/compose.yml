@@ -1,0 +1,18 @@
+services:
+  phpmyadmin:
+    container_name: ctr-phpmyadmin
+    image: lscr.io/linuxserver/phpmyadmin
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "80:80"
+    volumes:
+      - ./config:/config
+    networks:
+      net-databases:
+        ipv4_address: 10.1.6.253
+
+networks:
+  net-databases:
+    external: true
+  

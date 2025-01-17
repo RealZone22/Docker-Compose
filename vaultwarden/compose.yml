@@ -1,0 +1,23 @@
+services:
+  vaultwarden:
+    container_name: ctr-vaultwarden
+    image: vaultwarden/server # For OAuth (17.01.2025): timshel/vaultwarden:latest-alpine
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "80:80"
+    volumes:
+      - ./data:/data
+    networks:
+      vaultwarden:
+        ipv4_address: 10.1.5.2
+
+networks:
+  vaultwarden:
+    name: net-vaultwarden
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.5.0/24
+         gateway: 10.1.5.1
+  
