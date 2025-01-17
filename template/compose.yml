@@ -1,33 +1,26 @@
-# NOTE: This is a template file, please copy it to your desired location and use it.
 services:
   <SERVICE_NAME>:
-    container_name: ${CONTAINER_PREFIX}-<SERVICE_NAME>
+    container_name: ctr-<SERVICE_NAME>
     image: <IMAGE_NAME>
     restart: unless-stopped
-    env_file: .env
+    #env_file: .env
     #ports:
     #  - "<HOST_PORT>:<CONTAINER_PORT>"
     #volumes:
-    #  - ${DATA_DIR}:/data
-    healthcheck:
-      test:
-        - CMD
-        - curl
-        - '-f'
-        - 'http://127.0.0.1:80'
+    #  - ./data:/data
     networks:
-      databases:
+      #databases:
       <SERVCIE_NAME>:
-        ipv4_address: ${NETWORK_PREFIX}.0.2
+        ipv4_address: 10.0.0.2
 
 networks:
   <SERVCIE_NAME>:
-    name: ${NETWORK_NAME}
+    name: <NETWORK_NAME>
     driver: bridge
     ipam:
      config:
-       - subnet: ${NETWORK_PREFIX}.0.0/16
-         gateway: ${NETWORK_PREFIX}.0.1
+       - subnet: 10.0.0.0/24
+         gateway: 10.0.0.1
   #databases:
   #  external: true
   

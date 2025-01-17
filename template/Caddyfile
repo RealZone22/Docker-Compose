@@ -1,4 +1,3 @@
-# NOTE: This is a template file, please copy it to your desired location and use it.
 <DOMAIN> {
-    reverse_proxy <SERVICE_NAME>:<SERVICE_PORT>
+    reverse_proxy <SERVICE_IP>:<SERVICE_PORT>
 }
