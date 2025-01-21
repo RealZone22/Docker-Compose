@@ -10,7 +10,6 @@ services:
       - ./data:/var/lib/mysql
     networks:
       databases:
-        ipv4_address: 10.1.6.254
 
 networks:
   databases:

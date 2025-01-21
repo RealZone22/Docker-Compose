@@ -1,0 +1,29 @@
+services:
+  forgejo:
+    container_name: ctr-forgejo
+    image: codeberg.org/forgejo/forgejo:10
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "222:22"  
+      - "3000:3000"
+    volumes:
+      - ./data:/data
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    networks:
+      net-databases:
+      forgejo:
+        ipv4_address: 10.8.0.2
+
+networks:
+  forgejo:
+    name: net-forgejo
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.8.0.0/24
+         gateway: 10.8.0.1
+  net-databases:
+    external: true
+  
