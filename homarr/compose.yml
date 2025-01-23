@@ -1,0 +1,24 @@
+services:
+  homarr:
+    container_name: ctr-homarr
+    image: ghcr.io/homarr-labs/homarr
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "7575:7575"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - ./data:/appdata
+    networks:
+      homarr:
+        ipv4_address: 10.1.9.2
+
+networks:
+  homarr:
+    name: net-homarr
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.9.0/24
+         gateway: 10.1.9.1
+  
