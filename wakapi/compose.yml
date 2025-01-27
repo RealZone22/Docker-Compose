@@ -1,0 +1,25 @@
+services:
+  wakapi:
+    container_name: ctr-wakapi
+    image: ghcr.io/muety/wakapi
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "3000:3000"
+    volumes:
+      - ./data:/data
+    networks:
+      net-databases:
+      wakapi:
+        ipv4_address: 10.1.10.2
+
+networks:
+  wakapi:
+    name: net-wakapi
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.10.0/24
+         gateway: 10.1.10.1
+  net-databases:
+    external: true
