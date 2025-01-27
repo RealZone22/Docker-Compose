@@ -13,32 +13,32 @@
 ## Beszel
 | Service | IP          |
 |---------|-------------|
-| Service3| 192.168.1.3 |
+| Beszel  | 10.1.4.2    |
 
 ## Caddy
 | Service | IP          |
 |---------|-------------|
-| Service3| 192.168.1.3 |
+| Caddy   | 10.1.1.2    |
 
 ## Databases / Mariadb
-| Service | IP          |
-|---------|-------------|
-| Service3| 192.168.1.3 |
+| Service    | IP          |
+|------------|-------------|
+| Mariadb    | 10.1.6.254  |
 
 ## Databases / PHPMyAdmin
-| Service | IP          |
-|---------|-------------|
-| Service3| 192.168.1.3 |
+| Service    | IP          |
+|------------|-------------|
+| PHPMyAdmin | 10.1.6.253  |
 
 ## Forgejo
 | Service | IP          |
 |---------|-------------|
-| Service3| 192.168.1.3 |
+| ForgeJo | 10.1.8.2    |
 
 ## Homarr
 | Service | IP          |
 |---------|-------------|
-| Service3| 192.168.1.3 |
+| Homarr  | 10.1.9.2    |
 
 ## Immich
 | Service | IP          |
@@ -51,21 +51,22 @@
 | Service3| 192.168.1.3 |
 
 ## Portainer
-| Service | IP          |
-|---------|-------------|
-| Service3| 192.168.1.3 |
+| Service   | IP          |
+|-----------|-------------|
+| Portainer | 10.1.2.2    |
+| Agent     | 10.1.3.2    |
 
 ## VaultWarden
-| Service | IP          |
-|---------|-------------|
-| Service3| 192.168.1.3 |
+| Service     | IP          |
+|-------------|-------------|
+| VaultWarden | 10.1.5.2    |
 
 ## Wakapi
 | Service | IP          |
 |---------|-------------|
-| Service3| 192.168.1.3 |
+| Wakapi  | 10.1.10.2   |
 
 ## Watchtower
-| Service | IP          |
-|---------|-------------|
-| Service3| 192.168.1.3 |
+| Service    | IP          |
+|------------|-------------|
+| Watchtower | 10.1.7.2    |

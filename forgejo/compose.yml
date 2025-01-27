@@ -14,7 +14,7 @@ services:
     networks:
       net-databases:
       forgejo:
-        ipv4_address: 10.8.0.2
+        ipv4_address: 10.1.8.2
 
 networks:
   forgejo:
@@ -22,8 +22,8 @@ networks:
     driver: bridge
     ipam:
      config:
-       - subnet: 10.8.0.0/24
-         gateway: 10.8.0.1
+       - subnet: 10.1.8.0/24
+         gateway: 10.1.8.1
   net-databases:
     external: true
   

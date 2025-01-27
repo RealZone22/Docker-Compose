@@ -10,6 +10,7 @@ services:
       - ./config:/config
     networks:
       net-databases:
+        ipv4_address: 10.1.6.253
 
 networks:
   net-databases:
