@@ -6,9 +6,12 @@
 | Service1| 192.168.1.1 |
 
 ## Authentik
-| Service | IP          |
-|---------|-------------|
-| Service2| 192.168.1.2 |
+| Service    | IP          |
+|------------|-------------|
+| Server     | 10.1.11.2   |
+| Worker     | 10.1.11.3   |
+| Redis      | 10.1.11.4   |
+| Postgresql | 10.1.11.5   |
 
 ## Beszel
 | Service | IP          |
@@ -41,9 +44,12 @@
 | Homarr  | 10.1.9.2    |
 
 ## Immich
-| Service | IP          |
-|---------|-------------|
-| Service3| 192.168.1.3 |
+| Service           | IP          |
+|-------------------|-------------|
+| Server            | 10.1.12.2   |
+| Machine Learning  | 10.1.12.3   |
+| Redis             | 10.1.12.4   |
+| Postgresql        | 10.1.12.5   |
 
 ## NextCloud
 | Service | IP          |

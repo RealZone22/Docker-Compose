@@ -1,0 +1,70 @@
+services:
+  server:
+    container_name: ctr-immich-server
+    image: ghcr.io/immich-app/immich-server:release
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "2283:2283"
+    volumes:
+      #- str:/usr/src/app/upload If you want to use external storage
+      - ./upload:/usr/src/app/upload
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      immich:
+        ipv4_address: 10.1.12.2
+
+  machine-learning:
+    container_name: ctr-immich-machine-learning
+    image: ghcr.io/immich-app/immich-machine-learning:release
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./model-cache:/cache
+    networks:
+      immich:
+        ipv4_address: 10.1.12.3
+
+  redis:
+    container_name: ctr-immich-redis
+    image: redis:alpine
+    restart: unless-stopped
+    networks:
+      immich:
+        ipv4_address: 10.1.12.4
+
+  database:
+    container_name: ctr-immich-database
+    image: tensorchord/pgvecto-rs:pg14-v0.2.0
+    restart: unless-stopped
+    env_file: .env
+    command: >-
+      postgres
+      -c shared_preload_libraries=vectors.so
+      -c 'search_path="$$user", public, vectors'
+      -c logging_collector=on
+      -c max_wal_size=2GB
+      -c shared_buffers=512MB
+      -c wal_compression=on
+    volumes:
+      - ./postgresql:/var/lib/postgresql/data
+    networks:
+      immich:
+        ipv4_address: 10.1.12.5
+
+#volumes:
+#  str:
+#    driver: local
+#    driver_opts:
+#      type: cifs
+#      device: "//host/share"
+#      o: "username=username,password=password,uid=1000,gid=1000"
+
+networks:
+  immich:
+    name: net-immich
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.12.0/24
+         gateway: 10.1.12.1
