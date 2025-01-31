@@ -1,4 +1,7 @@
 <div align="center">
+  <a href="https://github.com/RealZone22/Docker-Compose">
+    <img src="docker.svg" alt="Logo" width="100" height="100">
+  </a>
 <h3 align="center">Docker-Compose</h3>
 
   <p align="center">

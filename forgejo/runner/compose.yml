@@ -1,0 +1,40 @@
+services:
+  docker-in-docker:
+    container_name: ctr-forgejo-dind
+    image: docker:dind
+    restart: unless-stopped
+    privileged: true
+    command: ['dockerd', '-H', 'tcp://0.0.0.0:2375', '--tls=false']
+    networks:
+      forgejo:
+        ipv4_address: 10.1.8.3
+      #net-forgejo:
+      #  ipv4_address: 10.1.8.3
+
+  forgejo:
+    container_name: ctr-forgejo-runner
+    image: data.forgejo.org/forgejo/runner:4.0.0
+    restart: unless-stopped
+    user: 1001:1001
+    env_file: .env
+    command: '/bin/sh -c "while : ; do sleep 1 ; done ;"'
+    volumes:
+      - ./data:/data
+    links:
+      - docker-in-docker
+    networks:
+      forgejo:
+        ipv4_address: 10.1.8.4
+      #net-forgejo:
+      #  ipv4_address: 10.1.8.4
+
+networks:
+  #net-forgejo: # Use if the runner runs on the same host as the forgejo container
+  #  external: true
+  forgejo:
+    name: net-forgejo
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.8.0/24
+         gateway: 10.1.8.1
