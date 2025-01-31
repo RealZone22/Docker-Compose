@@ -3,7 +3,7 @@
 ## Adguard
 | Service | IP          |
 |---------|-------------|
-| Service1| 192.168.1.1 |
+| Adguard | 10.1.14.2   |
 
 ## Authentik
 | Service    | IP          |
@@ -54,7 +54,10 @@
 ## NextCloud
 | Service | IP          |
 |---------|-------------|
-| Service3| 192.168.1.3 |
+| app     | 10.1.13.2   |
+| cron    | 10.1.13.3   |
+| turn    | 10.1.13.4   |
+| redis   | 10.1.13.5   |
 
 ## Portainer
 | Service   | IP          |

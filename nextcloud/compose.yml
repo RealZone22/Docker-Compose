@@ -1,0 +1,58 @@
+services:
+  app:
+    container_name: ctr-nextcloud-app
+    image: nextcloud:stable-fpm-alpine
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./nextcloud:/var/www/html
+    networks:
+      net-databases:
+      nextcloud:
+        ipv4_address: 10.1.13.2
+
+  cron:
+    container_name: ctr-nextcloud-cron
+    image: nextcloud:stable-fpm-alpine
+    restart: unless-stopped
+    env_file: .env
+    entrypoint: /cron.sh
+    volumes:
+      - ./nextcloud:/var/www/html
+    networks:
+      net-databases:
+      nextcloud:
+        ipv4_address: 10.1.13.3
+
+  turn:
+    container_name: ctr-nextcloud-turn
+    image: coturn/coturn
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "5349:5349"
+    volumes:
+      - ./nextcloud:/var/www/html
+    networks:
+      nextcloud:
+        ipv4_address: 10.1.13.4
+
+  redis:
+    container_name: ctr-nextcloud-redis
+    image: redis:alpine
+    restart: unless-stopped
+    networks:
+      nextcloud:
+        ipv4_address: 10.1.13.5
+
+networks:
+  nextcloud:
+    name: net-nextcloudnextcloud
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.13.0/24
+         gateway: 10.1.13.1
+  net-databases:
+    external: true
+  
