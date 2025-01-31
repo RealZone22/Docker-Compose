@@ -8,7 +8,9 @@ services:
     #  - "7575:7575"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
-      - ./data:/appdata
+      - ./configs:/app/data/configs
+      - ./icons:/app/public/icons
+      - ./data:/data
     networks:
       homarr:
         ipv4_address: 10.1.9.2
