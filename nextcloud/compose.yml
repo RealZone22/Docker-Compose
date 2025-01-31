@@ -47,7 +47,7 @@ services:
 
 networks:
   nextcloud:
-    name: net-nextcloudnextcloud
+    name: net-nextcloud
     driver: bridge
     ipam:
      config:
