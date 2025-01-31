@@ -1,0 +1,23 @@
+services:
+  uptime-kuma:
+    container_name: ctr-uptime-kuma
+    image: louislam/uptime-kuma:1
+    restart: unless-stopped
+    #ports:
+    #  - "3001:3001"
+    volumes:
+      - ./data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      uptime-kuma:
+        ipv4_address: 10.1.14.2
+
+networks:
+  uptime-kuma:
+    name: net-uptime-kuma
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.14.0/24
+         gateway: 10.1.14.1
+  

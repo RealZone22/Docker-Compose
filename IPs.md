@@ -79,3 +79,8 @@
 | Service    | IP          |
 |------------|-------------|
 | Watchtower | 10.1.7.2    |
+
+## Uptime Kuma
+| Service     | IP          |
+|-------------|-------------|
+| Uptime Kuma | 10.1.14.2    |
