@@ -1,7 +1,7 @@
 services:
   app:
     container_name: ctr-nextcloud-app
-    image: nextcloud:stable-fpm-alpine
+    image: nextcloud
     restart: unless-stopped
     env_file: .env
     volumes:
@@ -13,7 +13,7 @@ services:
 
   cron:
     container_name: ctr-nextcloud-cron
-    image: nextcloud:stable-fpm-alpine
+    image: nextcloud
     restart: unless-stopped
     env_file: .env
     entrypoint: /cron.sh
@@ -47,7 +47,7 @@ services:
 
 networks:
   nextcloud:
-    name: net-nextcloud
+    name: net-nextcloudnextcloud
     driver: bridge
     ipam:
      config:
@@ -55,4 +55,3 @@ networks:
          gateway: 10.1.13.1
   net-databases:
     external: true
-  
