@@ -1,3 +1,27 @@
 <DOMAIN> {
-    reverse_proxy 10.1.15.2:3000
+  reverse_proxy 10.1.15.2:3000
+
+  # DNS over HTTPS
+  handle /dns-query {
+    reverse_proxy https://10.1.15.2:443 {
+      trusted_proxies 172.17.0.0/24
+      header_up Host {upstream_hostport}
+      header_up X-Real-IP 1.2.3.4
+      transport http {
+        tls
+        tls_server_name dns.realzone22.de
+      }
+    }
+  }
+
+  handle /dns-query/* {
+    reverse_proxy https://10.1.15.2:443 {
+      trusted_proxies 172.17.0.0/24
+      header_up Host {upstream_hostport}
+      transport http {
+        tls
+        tls_server_name dns.realzone22.de
+      }
+    }
+  }
 }
