@@ -23,7 +23,7 @@ services:
       - ./work:/opt/adguardhome/work
     networks:
       adguard:
-        ipv4_address: 10.1.14.2
+        ipv4_address: 10.1.15.2
 
 networks:
   adguard:
@@ -31,6 +31,6 @@ networks:
     driver: bridge
     ipam:
      config:
-       - subnet: 10.1.14.0/24
-         gateway: 10.1.14.1
+       - subnet: 10.1.15.0/24
+         gateway: 10.1.15.1
   

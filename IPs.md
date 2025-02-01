@@ -3,7 +3,7 @@
 ## Adguard
 | Service | IP          |
 |---------|-------------|
-| Adguard | 10.1.14.2   |
+| Adguard | 10.1.15.2   |
 
 ## Authentik
 | Service    | IP          |
