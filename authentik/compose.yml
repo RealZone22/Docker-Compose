@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     command: server
     env_file: .env
+    #user: root # This should fix permission denied errors
     #ports:
     #  - "9000:9000"
     #  - "9443:9443"
@@ -21,6 +22,7 @@ services:
     restart: unless-stopped
     command: worker
     env_file: .env
+    #user: root # This should fix permission denied errors
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./media:/media
