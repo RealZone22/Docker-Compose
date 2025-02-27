@@ -26,4 +26,3 @@ networks:
          gateway: 10.1.8.1
   net-databases:
     external: true
-  

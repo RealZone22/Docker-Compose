@@ -23,4 +23,3 @@ networks:
      config:
        - subnet: 10.1.9.0/24
          gateway: 10.1.9.1
-  

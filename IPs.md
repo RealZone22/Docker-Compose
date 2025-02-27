@@ -1,37 +1,36 @@
 # Docker Compose Projects
 
-## Adguard
+## Caddy
 | Service | IP          |
 |---------|-------------|
-| Adguard | 10.1.15.2   |
+| Caddy   | 10.1.1.2    |
 
-## Authentik
-| Service    | IP          |
-|------------|-------------|
-| Server     | 10.1.11.2   |
-| Worker     | 10.1.11.3   |
-| Redis      | 10.1.11.4   |
-| Postgresql | 10.1.11.5   |
+## Portainer
+| Service   | IP          |
+|-----------|-------------|
+| Portainer | 10.1.2.2    |
+| Agent     | 10.1.3.2    |
 
 ## Beszel
 | Service | IP          |
 |---------|-------------|
 | Beszel  | 10.1.4.2    |
 
-## Caddy
-| Service | IP          |
-|---------|-------------|
-| Caddy   | 10.1.1.2    |
+## VaultWarden
+| Service     | IP          |
+|-------------|-------------|
+| VaultWarden | 10.1.5.2    |
 
-## Databases / Mariadb
+## MariaDB / PHPMyAdmin
 | Service    | IP          |
 |------------|-------------|
-| Mariadb    | 10.1.6.254  |
-
-## Databases / PHPMyAdmin
-| Service    | IP          |
-|------------|-------------|
+| MariaDB    | 10.1.6.254  |
 | PHPMyAdmin | 10.1.6.253  |
+
+## Watchtower
+| Service    | IP          |
+|------------|-------------|
+| Watchtower | 10.1.7.2    |
 
 ## Forgejo
 | Service | IP          |
@@ -42,6 +41,19 @@
 | Service | IP          |
 |---------|-------------|
 | Homarr  | 10.1.9.2    |
+
+## Wakapi
+| Service | IP          |
+|---------|-------------|
+| Wakapi  | 10.1.10.2   |
+
+## Authentik
+| Service    | IP          |
+|------------|-------------|
+| Server     | 10.1.11.2   |
+| Worker     | 10.1.11.3   |
+| Redis      | 10.1.11.4   |
+| Postgresql | 10.1.11.5   |
 
 ## Immich
 | Service           | IP          |
@@ -59,28 +71,17 @@
 | turn    | 10.1.13.4   |
 | redis   | 10.1.13.5   |
 
-## Portainer
-| Service   | IP          |
-|-----------|-------------|
-| Portainer | 10.1.2.2    |
-| Agent     | 10.1.3.2    |
-
-## VaultWarden
-| Service     | IP          |
-|-------------|-------------|
-| VaultWarden | 10.1.5.2    |
-
-## Wakapi
-| Service | IP          |
-|---------|-------------|
-| Wakapi  | 10.1.10.2   |
-
-## Watchtower
-| Service    | IP          |
-|------------|-------------|
-| Watchtower | 10.1.7.2    |
-
 ## Uptime Kuma
 | Service     | IP          |
 |-------------|-------------|
-| Uptime Kuma | 10.1.14.2    |
+| Uptime Kuma | 10.1.14.2   |
+
+## Adguard
+| Service | IP          |
+|---------|-------------|
+| Adguard | 10.1.15.2   |
+
+## Syncthing
+| Service     | IP          |
+|-------------|-------------|
+| Syncthing   | 10.1.16.2   |

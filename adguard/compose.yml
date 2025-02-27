@@ -33,4 +33,3 @@ networks:
      config:
        - subnet: 10.1.15.0/24
          gateway: 10.1.15.1
-  
