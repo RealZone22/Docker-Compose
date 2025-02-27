@@ -30,4 +30,4 @@ networks:
 #    driver_opts:
 #      type: cifs
 #      device: "//host/share"
-#      o: "username=,password=,uid=1000,gid=1000"
+#      o: "username=,password=,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
