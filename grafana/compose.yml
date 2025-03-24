@@ -1,0 +1,37 @@
+services:
+  grafana:
+    container_name: ctr-grafana
+    image: grafana/grafana-enterprise
+    restart: unless-stopped
+    env_file: .env
+    user: root
+    #ports:
+    #  - "3000:3000"
+    volumes:
+      - ./data:/var/lib/grafana
+    networks:
+      grafana:
+        ipv4_address: 10.1.19.2
+
+  prometheus:
+    container_name: ctr-grafana-prometheus
+    image: prom/prometheus
+    restart: unless-stopped
+    user: root
+    #ports:
+    #  - "9090:9090"
+    volumes:
+      - ./data:/prometheus
+      - ./config:/etc/prometheus/
+    networks:
+      grafana:
+        ipv4_address: 10.1.19.3
+
+networks:
+  grafana:
+    name: net-grafana
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.19.0/24
+         gateway: 10.1.19.1
