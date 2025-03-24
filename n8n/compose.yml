@@ -1,0 +1,34 @@
+services:
+  n8n:
+    container_name: ctr-n8n
+    image: n8nio/n8n
+    restart: unless-stopped
+    user: root
+    env_file: .env
+    #ports:
+    #  - "5678:5678"
+    volumes:
+      - ./data:/home/node/.n8n
+    networks:
+      n8n:
+        ipv4_address: 10.1.17.2
+
+  postgresql:
+    container_name: ctr-n8n-postgresql
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./postgresql:/var/lib/postgresql/data
+    networks:
+      n8n:
+        ipv4_address: 10.1.17.3
+
+networks:
+  n8n:
+    name: n8n
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.17.0/24
+         gateway: 10.1.17.1
