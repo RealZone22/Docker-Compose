@@ -1,0 +1,27 @@
+services:
+  semaphore:
+    container_name: ctr-semaphore
+    image: semaphoreui/semaphore
+    restart: unless-stopped
+    env_file: .env
+    user: root
+    #ports:
+    #  - "3000:3000"
+    volumes:
+      - ./data:/var/lib/semaphore
+      - ./config:/etc/semaphore
+    networks:
+      #net-databases:
+      semaphore:
+        ipv4_address: 10.1.18.2
+
+networks:
+  semaphore:
+    name: net-semaphore
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.18.0/24
+         gateway: 10.1.18.1
+  #net-databases:
+  #  external: true
