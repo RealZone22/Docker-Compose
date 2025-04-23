@@ -1,0 +1,43 @@
+services:
+  pingvin:
+    container_name: ctr-pingvin
+    image: stonith404/pingvin-share
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "3000:3000"
+    volumes:
+      #- str:/opt/app/backend/data/uploads # If you want to use external storage. Note: Don't remove the ./data volume line as the Database will be stored there!
+      - ./data:/opt/app/backend/data
+      - ./images:/opt/app/frontend/public/img
+    #depends_on:
+    #  clamav:
+    #    condition: service_healthy
+    networks:
+      pingvin:
+        ipv4_address: 10.1.20.2
+
+  #clamav:
+  #  container_name: ctr-pingvin-clamav
+  #  image: clamav/clamav
+  #  restart: unless-stopped
+  #  networks:
+  #    pingvin:
+  #      ipv4_address: 10.1.20.3
+
+networks:
+  pingvin:
+    name: net-pingvin
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.20.0/24
+         gateway: 10.1.20.1
+
+#volumes:
+#  str:
+#    driver: local
+#    driver_opts:
+#      type: cifs
+#      device: "//host/share"
+#      o: "username=,password=,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
