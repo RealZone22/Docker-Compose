@@ -1,0 +1,72 @@
+services:
+  server:
+    image: ghcr.io/immich-app/immich-server:release
+    env_file: .env
+    volumes:
+      #- str:/usr/src/app/upload If you want to use external storage
+      - ./upload:/usr/src/app/upload
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - immich
+      - caddy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  machine-learning:
+    image: ghcr.io/immich-app/immich-machine-learning:release
+    env_file: .env
+    volumes:
+      - ./model-cache:/cache
+    networks:
+      - immich
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  redis:
+    image: redis:alpine
+    networks:
+      - immich
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  database:
+    image: tensorchord/pgvecto-rs:pg14-v0.2.0
+    env_file: .env
+    command: >-
+      postgres
+      -c shared_preload_libraries=vectors.so
+      -c 'search_path="$$user", public, vectors'
+      -c logging_collector=on
+      -c max_wal_size=2GB
+      -c shared_buffers=512MB
+      -c wal_compression=on
+    volumes:
+      - ./postgresql:/var/lib/postgresql/data
+    networks:
+      - immich
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  immich:
+    name: net-immich
+    driver: overlay
+  caddy:
+    external: true
+    name: net-caddy
+
+#volumes:
+#  str:
+#    driver: local
+#    driver_opts:
+#      type: cifs
+#      device: "//host/share"
+#      o: "username=username,password=password,uid=1000,gid=1000"

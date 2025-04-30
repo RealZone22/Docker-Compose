@@ -1,0 +1,3 @@
+<DOMAIN> {
+    reverse_proxy beszel_hub:8090
+}

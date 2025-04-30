@@ -1,0 +1,3 @@
+<DOMAIN> {
+    reverse_proxy uptime_kuma_server:3001
+}

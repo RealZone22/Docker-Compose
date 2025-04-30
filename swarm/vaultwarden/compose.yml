@@ -1,0 +1,22 @@
+services:
+  server:
+    image: vaultwarden/server # For OAuth (17.01.2025): timshel/vaultwarden:latest-alpine
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/data
+    networks:
+      - vaultwarden
+      - caddy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  vaultwarden:
+    name: net-vaultwarden
+    driver: overlay
+  caddy:
+    external: true
+    name: net-caddy

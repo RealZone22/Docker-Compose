@@ -1,0 +1,60 @@
+services:
+  server:
+    image: nextcloud
+    env_file: .env
+    volumes:
+      - ./nextcloud:/var/www/html
+    networks:
+      - nextcloud
+      - caddy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  cron:
+    image: nextcloud
+    env_file: .env
+    entrypoint: /cron.sh
+    volumes:
+      - ./nextcloud:/var/www/html
+    networks:
+      - nextcloud
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  turn:
+    image: coturn/coturn
+    env_file: .env
+    ports:
+      - target: 5349
+        published: 5349
+        protocol: tcp
+        mode: host
+    volumes:
+      - ./nextcloud:/var/www/html
+    networks:
+      - nextcloud
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  redis:
+    image: redis:alpine
+    networks:
+      - nextcloud
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  nextcloud:
+    name: net-nextcloud
+    driver: overlay
+  caddy:
+    external: true
+    name: net-caddy

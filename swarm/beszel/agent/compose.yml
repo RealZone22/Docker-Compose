@@ -1,0 +1,11 @@
+services:
+  agent:
+    image: henrygd/beszel-agent
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure

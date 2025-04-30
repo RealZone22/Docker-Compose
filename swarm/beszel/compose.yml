@@ -1,0 +1,22 @@
+services:
+  hub:
+    image: henrygd/beszel
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    volumes:
+      - ./data:/beszel_data
+    networks:
+      - beszel
+      - caddy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  beszel:
+    name: net-beszel
+    driver: overlay
+  caddy:
+    name: net-caddy
+    external: true

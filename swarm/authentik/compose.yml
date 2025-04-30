@@ -1,0 +1,64 @@
+services:
+  server:
+    image: ghcr.io/goauthentik/server
+    command: server
+    env_file: .env
+    volumes:
+      - ./media:/media
+      - ./custom-templates:/templates
+    networks:
+      - authentik
+      - caddy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  worker:
+    image: ghcr.io/goauthentik/server
+    command: worker
+    env_file: .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./media:/media
+      - ./certs:/certs
+      - ./custom-templates:/templates
+    networks:
+      - authentik
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  redis:
+    image: redis:alpine
+    command: --save 60 1 --loglevel warning
+    env_file: .env
+    volumes:
+      - ./redis:/data
+    networks:
+      - authentik
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  postgresql:
+    image: postgres:16-alpine
+    env_file: .env
+    volumes:
+      - ./postgresql:/var/lib/postgresql/data
+    networks:
+      - authentik
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  authentik:
+    name: net-authentik
+    driver: overlay
+  caddy:
+    external: true
+    name: net-caddy

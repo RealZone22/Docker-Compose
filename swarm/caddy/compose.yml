@@ -1,0 +1,30 @@
+services:
+  server:
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: udp
+        mode: host
+    volumes:
+      - ./data:/data
+      - ./config:/config
+      - ./sites:/etc/caddy/
+    networks:
+      - caddy
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+
+networks:
+  caddy:
+    driver: overlay
+    attachable: true

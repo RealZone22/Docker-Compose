@@ -1,0 +1,21 @@
+services:
+  server:
+    image: ghcr.io/muety/wakapi
+    env_file: .env
+    volumes:
+      - ./data:/data
+    networks:
+      - wakapi
+      - caddy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  wakapi:
+    name: net-wakapi
+    driver: overlay
+  caddy:
+    external: true
+    name: net-caddy

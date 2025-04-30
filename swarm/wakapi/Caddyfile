@@ -1,0 +1,3 @@
+<DOMAIN> {
+    reverse_proxy wakapi_server:3000
+}
