@@ -4,7 +4,14 @@ services:
     env_file: .env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - shepherd
     deploy:
       placement:
         constraints:
           - node.role == manager
+
+networks:
+  shepherd:
+    name: net-shepherd
+    driver: overlay

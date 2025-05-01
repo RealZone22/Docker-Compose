@@ -1,0 +1,3 @@
+<DOMAIN> {
+    reverse_proxy phpmyadmin_server:80
+}

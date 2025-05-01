@@ -1,0 +1,3 @@
+<DOMAIN> {
+    reverse_proxy semaphore_server:3000
+}

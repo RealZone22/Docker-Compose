@@ -1,0 +1,23 @@
+services:
+  server:
+    image: semaphoreui/semaphore
+    env_file: .env
+    user: root
+    volumes:
+      - ./data:/var/lib/semaphore
+      - ./config:/etc/semaphore
+    networks:
+      - semaphore
+      - caddy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  semaphore:
+    name: net-semaphore
+    driver: overlay
+  caddy:
+    name: net-caddy
+    external: true

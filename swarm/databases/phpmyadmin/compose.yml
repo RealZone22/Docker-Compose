@@ -1,0 +1,21 @@
+services:
+  server:
+    image: lscr.io/linuxserver/phpmyadmin
+    env_file: .env
+    volumes:
+      - ./config:/config
+    networks:
+      - phpmyadmin
+      - caddy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  phpmyadmin:
+    name: net-phpmyadmin
+    driver: overlay
+  caddy:
+    name: net-caddy
+    external: true
