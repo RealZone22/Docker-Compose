@@ -1,5 +1,6 @@
 services:
   server:
+    image: caddy:2
     ports:
       - target: 80
         published: 80
@@ -26,5 +27,6 @@ services:
 
 networks:
   caddy:
+    name: net-caddy
     driver: overlay
     attachable: true
