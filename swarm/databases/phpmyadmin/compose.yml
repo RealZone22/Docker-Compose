@@ -5,7 +5,7 @@ services:
     volumes:
       - ./config:/config
     networks:
-      - phpmyadmin
+      - databases
       - caddy
     deploy:
       replicas: 1
@@ -13,9 +13,10 @@ services:
         condition: on-failure
 
 networks:
-  phpmyadmin:
-    name: net-phpmyadmin
+  databases:
+    name: net-databases
     driver: overlay
+    external: true
   caddy:
     name: net-caddy
     external: true

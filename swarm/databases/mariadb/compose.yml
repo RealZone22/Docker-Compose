@@ -1,12 +1,10 @@
 services:
   server:
-    image: ghcr.io/muety/wakapi
+    image: mariadb
     env_file: .env
     volumes:
-      - ./data:/data
+      - ./data:/var/lib/mysql
     networks:
-      - wakapi
-      - caddy
       - databases
     deploy:
       replicas: 1
@@ -14,12 +12,7 @@ services:
         condition: on-failure
 
 networks:
-  wakapi:
-    name: net-wakapi
-    driver: overlay
-  caddy:
-    external: true
-    name: net-caddy
   databases:
-    external: true
     name: net-databases
+    driver: overlay
+    attachable: true

@@ -9,6 +9,7 @@ services:
     networks:
       - semaphore
       - caddy
+      - databases
     deploy:
       replicas: 1
       restart_policy:
@@ -21,3 +22,6 @@ networks:
   caddy:
     name: net-caddy
     external: true
+  databases:
+    external: true
+    name: net-databases

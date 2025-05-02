@@ -1,6 +1,6 @@
 services:
   server:
-    image: codeberg.org/forgejo/forgejo:10
+    image: codeberg.org/forgejo/forgejo:11
     env_file: .env
     ports:
       - target: 22
@@ -14,6 +14,7 @@ services:
     networks:
       - forgejo
       - caddy
+      - databases
     deploy:
       replicas: 1
       restart_policy:
@@ -23,6 +24,10 @@ networks:
   forgejo:
     name: net-forgejo
     driver: overlay
+    attachable: true
   caddy:
     external: true
     name: net-caddy
+  databases:
+    external: true
+    name: net-databases
