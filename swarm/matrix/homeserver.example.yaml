@@ -1,0 +1,45 @@
+server_name: "example"
+pid_file: /data/homeserver.pid
+listeners:
+  - port: 8008
+    tls: false
+    type: http
+    x_forwarded: true
+    resources:
+      - names: [client, federation]
+        compress: false
+database:
+  name: psycopg2
+  args:
+    user: synapse
+    password: synapse
+    database: synapse
+    host: matrix_db
+    cp_min: 5
+    cp_max: 10
+log_config: "/data/example.log.config"
+media_store_path: /data/media_store
+registration_shared_secret: "<secret>"
+report_stats: false
+macaroon_secret_key: "<secret>"
+form_secret: "<secret>"
+signing_key_path: "/data/example.signing.key"
+trusted_key_servers:
+  - server_name: "matrix.org"
+
+# Optional OAuth (e.g. Authentik)
+#oidc_providers:
+#  - idp_id: authentik
+#    idp_name: authentik
+#    discover: true
+#    issuer: "https://your.authentik.example.org/application/o/your-app-slug/" # TO BE FILLED: domain and slug
+#    client_id: "your client id" # TO BE FILLED
+#    client_secret: "your client secret" # TO BE FILLED
+#    scopes:
+#      - "openid"
+#      - "profile"
+#      - "email"
+#    user_mapping_provider:
+#      config:
+#        localpart_template: "{{ user.preferred_username }}"
+#        display_name_template: "{{ user.preferred_username|capitalize }}" # TO BE FILLED: If your users have names in Authentik and you want those in Synapse, this should be replaced with user.name|capitalize.

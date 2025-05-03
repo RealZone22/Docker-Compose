@@ -1,0 +1,44 @@
+services:
+  synapse:
+    image: docker.io/matrixdotorg/synapse:latest
+    env_file: .env
+    volumes:
+      - ./data:/data
+    networks:
+      - matrix
+      - caddy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  db:
+    image: docker.io/postgres:16-alpine
+    env_file: .env
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      - matrix
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  element:
+    image: vectorim/element-web:latest
+    volumes:
+      - ./data/element-config.json:/app/config.json
+    networks:
+      - matrix
+      - caddy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  matrix:
+    name: net-matrix
+    driver: overlay
+  caddy:
+    name: net-caddy
+    external: true

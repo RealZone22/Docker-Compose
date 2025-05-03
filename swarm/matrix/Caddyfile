@@ -1,0 +1,47 @@
+<DOMAIN> {
+    encode gzip
+    header {
+        X-Content-Type-Options nosniff
+    }
+
+    @matrix path_regexp matrix ^(/_matrix|/_synapse/client)
+    handle @matrix {
+        reverse_proxy matrix_synapse:8008 {
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Host {host}
+        }
+    }
+
+    handle {
+        reverse_proxy matrix_element:80 {
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Host {host}
+        }
+    }
+}
+
+:8448 {
+    encode gzip
+    header {
+        X-Content-Type-Options nosniff
+    }
+
+    @matrix path_regexp matrix ^(/_matrix|/_synapse/client)
+    handle @matrix {
+        reverse_proxy matrix_synapse:8008 {
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Host {host}
+        }
+    }
+
+    handle {
+        reverse_proxy matrix_element:80 {
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Host {host}
+        }
+    }
+}
