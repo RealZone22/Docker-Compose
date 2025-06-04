@@ -1,0 +1,43 @@
+services:
+  server:
+    image: stonith404/pingvin-share
+    env_file: .env
+    volumes:
+      #- str:/opt/app/backend/data/uploads # If you want to use external storage. Note: Don't remove the ./data volume line as the Database will be stored there!
+      - ./data:/opt/app/backend/data
+      - ./images:/opt/app/frontend/public/img
+    #depends_on:
+    #  clamav:
+    #    condition: service_healthy
+    networks:
+      - pingvin
+      - caddy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  #clamav:
+  #  image: clamav/clamav
+  #  networks:
+  #    - pingvin
+  #  deploy:
+  #    replicas: 1
+  #    restart_policy:
+  #      condition: on-failure
+
+networks:
+  pingvin:
+    name: net-pingvin
+    driver: overlay
+  caddy:
+    external: true
+    name: net-caddy
+
+#volumes:
+#  str:
+#    driver: local
+#    driver_opts:
+#      type: cifs
+#      device: "//host/share"
+#      o: "username=,password=,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"

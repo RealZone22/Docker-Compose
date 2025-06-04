@@ -1,7 +1,6 @@
 services:
   server:
     image: vaultwarden/server # For OAuth (17.01.2025): timshel/vaultwarden:latest-alpine
-    restart: unless-stopped
     env_file: .env
     volumes:
       - ./data:/data

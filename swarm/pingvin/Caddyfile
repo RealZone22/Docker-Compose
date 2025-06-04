@@ -1,0 +1,3 @@
+<DOMAIN> {
+    reverse_proxy pingvin_server:3000
+}
