@@ -1,0 +1,59 @@
+services:
+  synapse:
+    image: matrixdotorg/synapse
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    networks:
+      matrix:
+        ipv4_address: 10.1.21.2
+
+  db:
+    image: postgres:16-alpine
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      matrix:
+        ipv4_address: 10.1.21.3
+
+  element:
+    image: vectorim/element-web
+    restart: unless-stopped
+    volumes:
+      - ./element-config.json:/app/config.json
+    networks:
+      matrix:
+        ipv4_address: 10.1.21.4
+
+  lk-jwt-service:
+    image: ghcr.io/element-hq/lk-jwt-service:latest
+    env_file: .env
+    restart: unless-stopped
+    networks:
+      matrix:
+        ipv4_address: 10.1.21.5
+
+  livekit:
+    image: livekit/livekit-server:latest
+    command: --config /etc/livekit.yaml
+    restart: unless-stopped
+    volumes:
+      - ./livekit.yml:/etc/livekit.yaml:ro
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "50100-50200:50100-50200/udp"
+    networks:
+      matrix:
+        ipv4_address: 10.1.21.6
+
+networks:
+  matrix:
+    name: net-matrix
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.21.0/24
+         gateway: 10.1.21.1

@@ -1,0 +1,105 @@
+example.com, example.com:8448 {
+    encode gzip
+
+    header {
+        X-Content-Type-Options nosniff
+    }
+
+    @matrix path_regexp matrix ^(/_matrix|/_synapse)
+    handle @matrix {
+        reverse_proxy 10.1.21.2:8008 {
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Host {host}
+        }
+    }
+
+    handle_path /livekit/jwt* {
+        reverse_proxy 10.1.21.5:8080 {
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-For {remote_host}
+            header_up Host {host}
+        }
+    }
+
+    handle_path /sfu/get* {
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "POST"
+        header Access-Control-Allow-Headers "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token"
+
+        reverse_proxy 10.1.21.5:8080 {
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-For {remote_host}
+            header_up Host {host}
+        }
+    }
+
+    handle_path /livekit/sfu* {
+        reverse_proxy 10.1.21.6:7880 {
+            transport http {
+                versions h2c  # for HTTP/2 cleartext
+            }
+            header_up Upgrade {>Upgrade}
+            header_up Connection {>Connection}
+            header_up Host {host}
+        }
+    }
+
+    handle_path /.well-known/matrix/client {
+        header Content-Type application/json
+        respond `{
+            "m.homeserver": {
+                "base_url": "https://example.com"
+             },
+             "org.matrix.msc4143.rtc_foci": [
+                 {
+                     "type": "livekit",
+                     "livekit_service_url": "https://livekit-jwt.call.matrix.org/"
+                 }
+             ]
+        }` 200
+    }
+
+    handle {
+        reverse_proxy 10.1.21.4:80 {
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Host {host}
+        }
+    }
+}
+
+example.com {
+    encode gzip
+
+    route {
+       handle /.well-known/matrix/client {
+          header Content-Type application/json
+          header Content-Type application/json
+          header Access-Control-Allow-Origin "*"
+          header Access-Control-Allow-Methods "GET, OPTIONS"       
+          respond `{
+             "m.homeserver": {
+                 "base_url": "https://example.com"
+            },
+            "org.matrix.msc4143.rtc_foci": [
+                {
+                    "type": "livekit",
+                    "livekit_service_url": "https://livekit-jwt.call.matrix.org/"
+                 }
+             ]
+          }` 200
+       }
+
+        handle /.well-known/matrix/server {
+            header Content-Type application/json
+            respond `{
+                "m.server": "example.com:443"
+            }` 200
+        }
+
+        handle {
+            redir https://example.com
+        }
+    }
+}

@@ -7,8 +7,8 @@ services:
     #ports:
     #  - "2283:2283"
     volumes:
-      #- str:/usr/src/app/upload If you want to use external storage
-      - ./upload:/usr/src/app/upload
+      #- str:/usr/src/app/upload # If you want to use external storage
+      - ./upload:/usr/src/app/upload # If you use external storage delete this line
       - /etc/localtime:/etc/localtime:ro
     networks:
       immich:

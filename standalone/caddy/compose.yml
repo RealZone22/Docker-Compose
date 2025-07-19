@@ -10,6 +10,7 @@ services:
     volumes:
       - ./data:/data
       - ./config:/config
+      - ./sites:/etc/caddy/
     networks:
       caddy:
         ipv4_address: 10.1.1.2

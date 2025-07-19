@@ -1,7 +1,7 @@
 services:
   vaultwarden:
     container_name: ctr-vaultwarden
-    image: vaultwarden/server # For OAuth (17.01.2025): timshel/vaultwarden:latest-alpine
+    image: vaultwarden/server # For OAuth (19.07.2025): timshel/vaultwarden:latest-alpine
     restart: unless-stopped
     env_file: .env
     #ports:
