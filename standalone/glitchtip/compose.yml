@@ -1,0 +1,63 @@
+services:
+  postgres:
+    container_name: ctr-glitchtip-postgres
+    image: postgres:17
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      glitchtip:
+        ipv4_address: 10.1.22.2
+
+  redis:
+    container_name: ctr-glitchtip-redis
+    image: valkey/valkey
+    restart: unless-stopped
+    networks:
+      glitchtip:
+        ipv4_address: 10.1.22.3
+
+  web:
+    container_name: ctr-glitchtip-web
+    image: glitchtip/glitchtip
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "8000:8000"
+    volumes:
+      - ./uploads:/code/uploads
+    networks:
+      glitchtip:
+        ipv4_address: 10.1.22.4
+
+  worker:
+    container_name: ctr-glitchtip-worker
+    image: glitchtip/glitchtip
+    command: ./bin/run-celery-with-beat.sh
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./uploads:/code/uploads
+    networks:
+      glitchtip:
+        ipv4_address: 10.1.22.5
+
+  migrate:
+    container_name: ctr-glitchtip-migrate
+    image: glitchtip/glitchtip
+    command: ./bin/run-migrate.sh
+    networks:
+      glitchtip:
+        ipv4_address: 10.1.22.6
+
+networks:
+  glitchtip:
+    name: glitchtip
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.22.0/24
+         gateway: 10.1.22.1
+  #net-databases:
+  #  external: true
