@@ -1,3 +1,3 @@
 <DOMAIN> {
-    reverse_proxy 10.1.22.4:8000
+    reverse_proxy 10.1.22.4:8080 # NOTE: This can also be 8000 (at least thats written in the docs but for me 8080 works)
 }
