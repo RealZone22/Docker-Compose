@@ -1,7 +1,7 @@
 services:
   pingvin:
     container_name: ctr-pingvin
-    image: stonith404/pingvin-share
+    image: ghcr.io/aottr/ottrbox
     restart: unless-stopped
     env_file: .env
     #ports:
