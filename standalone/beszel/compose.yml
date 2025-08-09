@@ -4,7 +4,7 @@ services:
     image: henrygd/beszel
     restart: unless-stopped
     extra_hosts:
-      - 'host.docker.internal:host-gateway' # For same host (see https://github.com/henrygd/beszel/blob/main/supplemental/docker/same-system/docker-compose.yml)
+      - 'host.docker.internal:host-gateway' # For same host (see https://github.com/henrygd/beszel/blob/main/supplemental/docker/same-system/docker-compose.yml) NOTE: you still need the agent
     #ports:
     #  - "8090:8090"
     volumes:
