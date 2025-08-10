@@ -26,7 +26,7 @@ services:
 
 networks:
   n8n:
-    name: n8n
+    name: net-n8n
     driver: bridge
     ipam:
      config:
