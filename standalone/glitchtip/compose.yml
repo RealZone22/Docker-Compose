@@ -54,7 +54,7 @@ services:
 
 networks:
   glitchtip:
-    name: glitchtip
+    name: net-glitchtip
     driver: bridge
     ipam:
      config:

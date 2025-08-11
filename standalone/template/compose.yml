@@ -15,7 +15,7 @@ services:
 
 networks:
   <SERVCIE_NAME>:
-    name: <NETWORK_NAME>
+    name: net-<NETWORK_NAME>
     driver: bridge
     ipam:
      config:
