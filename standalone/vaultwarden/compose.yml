@@ -1,7 +1,7 @@
 services:
   vaultwarden:
     container_name: ctr-vaultwarden
-    image: vaultwarden/server # For OAuth (11.08.2025): vaultwarden/server:testing-alpine
+    image: vaultwarden/server # For OAuth (11.08.2025): vaultwarden/server:testing-alpine. If you want to use the sso overwrite use this image: timshel/vaultwarden:latest-alpine
     restart: unless-stopped
     env_file: .env
     #ports:
