@@ -1,0 +1,25 @@
+services:
+  warpgate:
+    container_name: ctr-warpgate
+    image: ghcr.io/warp-tech/warpgate
+    restart: unless-stopped
+    user: root # If you have permission issues
+    ports:
+      - "2222:2222" # For SSH Targets
+    #  - "8888:8888" # WebUI
+      - "33306:33306" # For MySQL Targets
+      - "55432:55432" # For Postgres Targets
+    volumes:
+      - ./data:/data
+    networks:
+      warpgate:
+        ipv4_address: 10.1.24.2
+
+networks:
+  warpgate:
+    name: net-warpgate
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.24.0/24
+         gateway: 10.1.24.1

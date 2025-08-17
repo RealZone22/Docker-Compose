@@ -1,5 +1,6 @@
 services:
   synapse:
+    container_name: ctr-matrix-synapse
     image: matrixdotorg/synapse
     restart: unless-stopped
     volumes:
@@ -9,6 +10,7 @@ services:
         ipv4_address: 10.1.21.2
 
   db:
+    container_name: ctr-matrix-db
     image: postgres:16-alpine
     env_file: .env
     restart: unless-stopped
@@ -19,6 +21,7 @@ services:
         ipv4_address: 10.1.21.3
 
   element:
+    container_name: ctr-matrix-element
     image: vectorim/element-web
     restart: unless-stopped
     volumes:
@@ -28,6 +31,7 @@ services:
         ipv4_address: 10.1.21.4
 
   lk-jwt-service:
+    container_name: ctr-matrix-lk_jwt_service
     image: ghcr.io/element-hq/lk-jwt-service:latest
     env_file: .env
     restart: unless-stopped
@@ -36,6 +40,7 @@ services:
         ipv4_address: 10.1.21.5
 
   livekit:
+    container_name: ctr-matrix-livekit
     image: livekit/livekit-server:latest
     command: --config /etc/livekit.yaml
     restart: unless-stopped
