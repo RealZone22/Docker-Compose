@@ -1,0 +1,47 @@
+services:
+  paperless:
+    container_name: ctr-paperless
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "8000:8000"
+    volumes:
+      - ./data:/usr/src/paperless/data
+      - ./media:/usr/src/paperless/media
+      #- str:/usr/src/paperless/media # If you want to use external storage. Make sure to remove the ./media above
+      - ./export:/usr/src/paperless/export
+      - ./consume:/usr/src/paperless/consume
+    networks:
+      net-databases:
+      paperless:
+        ipv4_address: 10.1.25.2
+
+  redis:
+    container_name: ctr-paperless-redis
+    image: redis:8
+    restart: unless-stopped
+    volumes:
+      - ./redis:/data
+    networks:
+      paperless:
+        ipv4_address: 10.1.25.3
+
+networks:
+  paperless:
+    name: net-paperless
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.25.0/24
+         gateway: 10.1.25.1
+  net-databases:
+    external: true
+
+#volumes:
+#  str:
+#    driver: local
+#    driver_opts:
+#      type: cifs
+#      device: "//host/share"
+#      o: "username=username,password=password,uid=1000,gid=1000"
