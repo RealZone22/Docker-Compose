@@ -14,8 +14,7 @@ services:
 
   postgresql:
     container_name: ctr-cloudreve-postgresql
-    image: postgres:17    
-    container_name: postgresql
+    image: postgres:17
     env_file: .env
     volumes:
       - ./db:/var/lib/postgresql/data
