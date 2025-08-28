@@ -1,0 +1,42 @@
+services:
+  cloudreve:
+    container_name: ctr-cloudreve
+    image: cloudreve/cloudreve:latest
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "5212:5212"
+    volumes:
+      - ./data:/cloudreve/data
+    networks:
+      cloudreve:
+        ipv4_address: 10.1.26.2
+
+  postgresql:
+    container_name: ctr-cloudreve-postgresql
+    image: postgres:17    
+    container_name: postgresql
+    env_file: .env
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      cloudreve:
+        ipv4_address: 10.1.26.3
+
+  redis:
+    container_name: ctr-cloudreve-redis
+    image: redis:latest
+    volumes:
+      - ./redis:/data
+    networks:
+      cloudreve:
+        ipv4_address: 10.1.26.4
+
+networks:
+  cloudreve:
+    name: net-cloudreve
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.26.0/24
+         gateway: 10.1.26.1
