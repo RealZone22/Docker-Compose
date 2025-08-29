@@ -8,6 +8,7 @@ services:
     #  - "5212:5212"
     volumes:
       - ./data:/cloudreve/data
+      #- str:/cloudreve/data/uploads # If you want to use external storage
     networks:
       cloudreve:
         ipv4_address: 10.1.26.2
@@ -39,3 +40,11 @@ networks:
      config:
        - subnet: 10.1.26.0/24
          gateway: 10.1.26.1
+
+#volumes:
+#  str:
+#    driver: local
+#    driver_opts:
+#      type: cifs
+#      device: "//host/share"
+#      o: "username=username,password=password,uid=1000,gid=1000"
