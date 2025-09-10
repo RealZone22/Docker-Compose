@@ -1,0 +1,34 @@
+services:
+  addy:
+    container_name: ctr-addy
+    image: anonaddy/anonaddy:latest
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "25:25"
+      #- "8000:8000"
+    volumes:
+      - ./data:/data
+    networks:
+      net-databases:
+      addy:
+        ipv4_address: 10.1.27.2
+
+  redis:
+    container_name: ctr-addy-redis
+    image: redis:4.0-alpine
+    restart: unless-stopped
+    networks:
+      addy:
+        ipv4_address: 10.1.27.3
+
+networks:
+  addy:
+    name: net-addy
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.27.0/24
+         gateway: 10.1.27.1
+  net-databases:
+    external: true
