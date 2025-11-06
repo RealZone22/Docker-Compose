@@ -1,7 +1,7 @@
 services:
   server:
     container_name: ctr-authentik-server
-    image: ghcr.io/goauthentik/server:2025.6.4
+    image: ghcr.io/goauthentik/server:2025.10.1
     restart: unless-stopped
     command: server
     env_file: .env
@@ -18,7 +18,7 @@ services:
 
   worker:
     container_name: ctr-authentik-worker
-    image: ghcr.io/goauthentik/server:2025.6.4
+    image: ghcr.io/goauthentik/server:2025.10.1
     restart: unless-stopped
     command: worker
     env_file: .env
@@ -32,18 +32,6 @@ services:
       authentik:
         ipv4_address: 10.1.11.3
 
-  redis:
-    container_name: ctr-authentik-redis
-    image: redis:alpine
-    restart: unless-stopped
-    command: --save 60 1 --loglevel warning
-    env_file: .env
-    volumes:
-      - ./redis:/data
-    networks:
-      authentik:
-        ipv4_address: 10.1.11.4
-
   postgresql:
     container_name: ctr-authentik-postgresql
     image: postgres:16-alpine
@@ -53,7 +41,7 @@ services:
       - ./postgresql:/var/lib/postgresql/data
     networks:
       authentik:
-        ipv4_address: 10.1.11.5
+        ipv4_address: 10.1.11.4
 
 networks:
   authentik:

@@ -1,0 +1,22 @@
+services:
+  openwebui:
+    container_name: ctr-openwebui
+    image: ghcr.io/open-webui/open-webui:main
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "8080:8080"
+    volumes:
+      - ./data:/data
+    networks:
+      openwebui:
+        ipv4_address: 10.1.28.2
+
+networks:
+  openwebui:
+    name: net-openwebui
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.28.0/24
+         gateway: 10.1.28.1
