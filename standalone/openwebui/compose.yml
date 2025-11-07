@@ -7,7 +7,7 @@ services:
     #ports:
     #  - "8080:8080"
     volumes:
-      - ./data:/data
+      - ./data:/app/backend/data
     networks:
       openwebui:
         ipv4_address: 10.1.28.2
