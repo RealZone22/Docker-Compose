@@ -9,7 +9,7 @@
       header_up X-Real-IP 1.2.3.4
       transport http {
         tls
-        tls_server_name dns.realzone22.de
+        tls_server_name <DOMAIN>
       }
     }
   }
@@ -20,7 +20,7 @@
       header_up Host {upstream_hostport}
       transport http {
         tls
-        tls_server_name dns.realzone22.de
+        tls_server_name <DOMAIN>
       }
     }
   }
