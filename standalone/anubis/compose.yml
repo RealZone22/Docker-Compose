@@ -1,0 +1,22 @@
+services:
+  anubis:
+    container_name: ctr-anubis
+    image: ghcr.io/techarohq/anubis:latest
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "8080:8080"
+    #volumes:
+    #  - ./botPolicy.yml:/data/cfg/botPolicy.yaml:ro
+    networks:
+      anubis:
+        ipv4_address: 10.1.29.2
+
+networks:
+  anubis:
+    name: net-anubis
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.29.0/24
+         gateway: 10.1.29.1
