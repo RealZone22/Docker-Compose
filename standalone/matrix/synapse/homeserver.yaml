@@ -95,7 +95,7 @@ rc_login:
 
 # Federation settings
 # Adjust based on your federation requirements
-federation_domain_whitelist: []  # Empty = allow all
+# federation_domain_whitelist: []
 # federation_domain_whitelist:
 #   - matrix.org
 #   - example.com
