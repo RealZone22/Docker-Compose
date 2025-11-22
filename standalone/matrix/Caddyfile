@@ -1,105 +1,212 @@
-example.com, example.com:8448 {
-    encode gzip
-
-    header {
-        X-Content-Type-Options nosniff
-    }
-
-    @matrix path_regexp matrix ^(/_matrix|/_synapse)
-    handle @matrix {
-        reverse_proxy 10.1.21.2:8008 {
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-            header_up Host {host}
-        }
-    }
-
-    handle_path /livekit/jwt* {
-        reverse_proxy 10.1.21.5:8080 {
-            header_up X-Forwarded-Proto {scheme}
-            header_up X-Forwarded-For {remote_host}
-            header_up Host {host}
-        }
-    }
-
-    handle_path /sfu/get* {
-        header Access-Control-Allow-Origin "*"
-        header Access-Control-Allow-Methods "POST"
-        header Access-Control-Allow-Headers "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token"
-
-        reverse_proxy 10.1.21.5:8080 {
-            header_up X-Forwarded-Proto {scheme}
-            header_up X-Forwarded-For {remote_host}
-            header_up Host {host}
-        }
-    }
-
-    handle_path /livekit/sfu* {
-        reverse_proxy 10.1.21.6:7880 {
-            transport http {
-                versions h2c  # for HTTP/2 cleartext
-            }
-            header_up Upgrade {>Upgrade}
-            header_up Connection {>Connection}
-            header_up Host {host}
-        }
-    }
-
-    handle_path /.well-known/matrix/client {
+# Taken from: https://github.com/wlphi/ess-docker-compose/blob/main/caddy/Caddyfile
+matrix.example.test {
+    # Well-known client endpoint
+    @wk path /.well-known/matrix/client
+    handle @wk {
         header Content-Type application/json
-        respond `{
-            "m.homeserver": {
-                "base_url": "https://example.com"
-             },
-             "org.matrix.msc4143.rtc_foci": [
-                 {
-                     "type": "livekit",
-                     "livekit_service_url": "https://livekit-jwt.call.matrix.org/"
-                 }
-             ]
-        }` 200
+        respond `{"m.homeserver":{"base_url":"https://matrix.example.test"},"m.authentication":{"issuer":"https://auth.example.test/"}}` 200
     }
 
-    handle {
-        reverse_proxy 10.1.21.4:80 {
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-            header_up Host {host}
+    # Well-known server endpoint (federation)
+    @wk_server path /.well-known/matrix/server
+    handle @wk_server {
+        header Content-Type application/json
+        respond `{"m.server":"matrix.example.test:443"}` 200
+    }
+
+    # Client versions endpoint with CORS
+    @versions path /_matrix/client/versions
+    handle @versions {
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, OPTIONS"
+        header Access-Control-Allow-Headers "Authorization, Content-Type, Accept"
+        header Vary "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+        reverse_proxy 10.1.21.3:8008 {
+            header_down -Access-Control-Allow-Origin
+            header_down -Access-Control-Allow-Methods
+            header_down -Access-Control-Allow-Headers
+            header_down -Vary
         }
+    }
+
+    # CORS preflight for auth metadata
+    @auth_preflight {
+        method OPTIONS
+        path /_matrix/client/unstable/org.matrix.msc2965/auth_metadata
+    }
+    handle @auth_preflight {
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, OPTIONS"
+        header Access-Control-Allow-Headers "Authorization, Content-Type, Accept"
+        header Access-Control-Max-Age "86400"
+        respond 204
+    }
+
+    # CORS preflight for all Matrix API
+    @preflight {
+        method OPTIONS
+        path_regexp matrix ^/_matrix/.*$
+    }
+    handle @preflight {
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Headers "Authorization, Content-Type, Accept"
+        header Access-Control-Max-Age "86400"
+        respond 204
+    }
+
+    # MAS compat endpoints (login/logout/refresh) with CORS
+    @compat path \
+        /_matrix/client/v3/login* \
+        /_matrix/client/v3/logout* \
+        /_matrix/client/v3/refresh* \
+        /_matrix/client/r0/login* \
+        /_matrix/client/r0/logout* \
+        /_matrix/client/r0/refresh*
+    handle @compat {
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Headers "Authorization, Content-Type, Accept"
+        header Vary "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+        reverse_proxy 10.1.21.4:8080 {
+            header_down -Access-Control-Allow-Origin
+            header_down -Access-Control-Allow-Methods
+            header_down -Access-Control-Allow-Headers
+            header_down -Vary
+        }
+    }
+
+    # Everything else under /_matrix → Synapse with CORS
+    @matrix_rest path_regexp matrix ^/_matrix/.*$
+    handle @matrix_rest {
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Headers "Authorization, Content-Type, Accept"
+        header Vary "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+        reverse_proxy 10.1.21.3:8008 {
+            header_down -Access-Control-Allow-Origin
+            header_down -Access-Control-Allow-Methods
+            header_down -Access-Control-Allow-Headers
+            header_down -Vary
+        }
+    }
+
+    # Default: everything else → Synapse
+    handle {
+        reverse_proxy 10.1.21.3:8008
     }
 }
 
-example.com {
-    encode gzip
+# =========================
+# Matrix Authentication Service (MAS)
+# =========================
+auth.example.test {
+    # OIDC Discovery
+    @disco path /.well-known/openid-configuration
+    handle @disco {
+        header ?Access-Control-Allow-Origin "*"
+        header ?Access-Control-Allow-Methods "GET, OPTIONS"
+        header ?Access-Control-Allow-Headers "*"
+        reverse_proxy 10.1.21.4:8080
+    }
 
-    route {
-       handle /.well-known/matrix/client {
-          header Content-Type application/json
-          header Content-Type application/json
-          header Access-Control-Allow-Origin "*"
-          header Access-Control-Allow-Methods "GET, OPTIONS"       
-          respond `{
-             "m.homeserver": {
-                 "base_url": "https://example.com"
+    # Dynamic Client Registration: CORS preflight
+    @reg_opts {
+        method OPTIONS
+        path /oauth2/registration
+    }
+    handle @reg_opts {
+        header ?Access-Control-Allow-Origin "*"
+        header ?Access-Control-Allow-Methods "POST, OPTIONS"
+        header ?Access-Control-Allow-Headers "*"
+        respond 204
+    }
+
+    # Dynamic Client Registration (POST)
+    @reg path /oauth2/registration
+    route @reg {
+        header ?Access-Control-Allow-Origin "*"
+        header ?Access-Control-Allow-Methods "POST, OPTIONS"
+        header ?Access-Control-Allow-Headers "*"
+        reverse_proxy 10.1.21.4:8080
+    }
+
+    # JWKS preflight
+    @jwks_opts {
+        method OPTIONS
+        path /oauth2/keys.json
+    }
+    handle @jwks_opts {
+        header ?Access-Control-Allow-Origin "*"
+        header ?Access-Control-Allow-Methods "GET, OPTIONS"
+        header ?Access-Control-Allow-Headers "*"
+        respond 204
+    }
+
+    # Map keys.json → /oauth2/jwks (MAS naming)
+    @jwksjson path /oauth2/keys.json
+    route @jwksjson {
+        header ?Access-Control-Allow-Origin "*"
+        header ?Access-Control-Allow-Methods "GET, OPTIONS"
+        header ?Access-Control-Allow-Headers "*"
+        uri replace /oauth2/keys.json /oauth2/jwks
+        reverse_proxy 10.1.21.4:8080
+    }
+
+    # Generic OAuth2 endpoints
+    @oauth path /oauth2/*
+    route @oauth {
+        header ?Access-Control-Allow-Origin "*"
+        header ?Access-Control-Allow-Methods "GET, OPTIONS, POST"
+        header ?Access-Control-Allow-Headers "*"
+        reverse_proxy 10.1.21.4:8080
+    }
+
+    # Account portal
+    handle_path /account/* {
+        reverse_proxy 10.1.21.4:8080
+    }
+
+    # Fallback: everything else to MAS
+    handle {
+        reverse_proxy 10.1.21.4:8080
+    }
+
+    # Add CORS on error responses
+    handle_errors {
+        header ?Access-Control-Allow-Origin "*"
+        header ?Access-Control-Allow-Headers "*"
+        header ?Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    }
+}
+
+# =========================
+# Element Web Client
+# =========================
+element.example.test {
+    # Serve config.json with proper settings
+    @cfg path /config.json
+    handle @cfg {
+        header Content-Type application/json
+        header Cache-Control no-store
+        respond `{
+            "default_server_config": {
+                "m.homeserver": {
+                    "base_url": "https://matrix.example.test",
+                    "server_name": "matrix.example.test"
+                }
             },
-            "org.matrix.msc4143.rtc_foci": [
-                {
-                    "type": "livekit",
-                    "livekit_service_url": "https://livekit-jwt.call.matrix.org/"
-                 }
-             ]
-          }` 200
-       }
+            "default_server_name": "matrix.example.test",
+            "disable_custom_urls": false,
+            "disable_guests": true,
+            "features": {
+                "feature_oidc_aware_navigation": true
+            }
+        }` 200
+    }
 
-        handle /.well-known/matrix/server {
-            header Content-Type application/json
-            respond `{
-                "m.server": "example.com:443"
-            }` 200
-        }
-
-        handle {
-            redir https://example.com
-        }
+    # Everything else to Element container
+    handle {
+        reverse_proxy 10.1.21.5:80
     }
 }

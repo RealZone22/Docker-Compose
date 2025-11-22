@@ -1,0 +1,2 @@
+CREATE DATABASE mas;
+CREATE DATABASE synapse;

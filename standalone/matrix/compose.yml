@@ -1,58 +1,65 @@
 services:
-  synapse:
-    container_name: ctr-matrix-synapse
-    image: matrixdotorg/synapse
+  postgres:
+    image: postgres:16-alpine
+    container_name: ctr-matrix-postgres
     restart: unless-stopped
+    env_file: .env
     volumes:
-      - ./data:/data
+      - ./db:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       matrix:
         ipv4_address: 10.1.21.2
 
-  db:
-    container_name: ctr-matrix-db
-    image: postgres:16-alpine
-    env_file: .env
+  synapse:
+    image: matrixdotorg/synapse:latest
+    container_name: ctr-matrix-synapse
     restart: unless-stopped
+    #ports:
+    #  - "8008:8008"  # Client API
+    #  - "8448:8448"  # Federation API
     volumes:
-      - ./db:/var/lib/postgresql/data
+      - ./synapse:/data
     networks:
       matrix:
         ipv4_address: 10.1.21.3
 
-  element:
-    container_name: ctr-matrix-element
-    image: vectorim/element-web
+  mas:
+    image: ghcr.io/element-hq/matrix-authentication-service
+    container_name: ctr-matrix-mas
     restart: unless-stopped
+    #ports:
+    #  - "8080:8080"
     volumes:
-      - ./element-config.json:/app/config.json
+      - ./mas/config.yml:/config.yaml
+      - ./mas/data:/data
+    command: ["server", "-c", "/config.yaml"]
     networks:
       matrix:
         ipv4_address: 10.1.21.4
 
-  lk-jwt-service:
-    container_name: ctr-matrix-lk_jwt_service
-    image: ghcr.io/element-hq/lk-jwt-service:latest
-    env_file: .env
+  element:
+    image: vectorim/element-web:latest
+    container_name: ctr-matrix-element
     restart: unless-stopped
+    #ports:
+    #  - "80:80"
+    volumes:
+      - ./element/config.json:/app/config.json
     networks:
       matrix:
         ipv4_address: 10.1.21.5
 
-  livekit:
-    container_name: ctr-matrix-livekit
-    image: livekit/livekit-server:latest
-    command: --config /etc/livekit.yaml
-    restart: unless-stopped
-    volumes:
-      - ./livekit.yml:/etc/livekit.yaml:ro
-    ports:
-      - "7880:7880"
-      - "7881:7881"
-      - "50100-50200:50100-50200/udp"
-    networks:
-      matrix:
-        ipv4_address: 10.1.21.6
+  # Optional
+  #element-admin:
+  #  image: awesometechnologies/synapse-admin:latest
+  #  container_name: matrix-element-admin
+  #  restart: unless-stopped
+  #  #ports:
+  #  #  - "80:80"
+  #  networks:
+  #    matrix:
+  #      ipv4_address: 10.1.21.6
 
 networks:
   matrix:
