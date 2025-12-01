@@ -1,0 +1,3 @@
+<DOMAIN> {
+    reverse_proxy 10.1.30.4:80
+}

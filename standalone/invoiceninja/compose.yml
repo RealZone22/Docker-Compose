@@ -1,0 +1,48 @@
+services:
+  invoiceninja:
+    container_name: ctr-invoiceninja
+    image: invoiceninja/invoiceninja-debian:latest
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./public:/var/www/html/public
+      - ./storage:/var/www/html/storage
+    networks:
+      net-databases:
+      invoiceninja:
+        ipv4_address: 10.1.30.2
+
+  redis:
+    container_name: ctr-invoiceninja-redis
+    image: redis:alpine
+    restart: unless-stopped
+    volumes:
+      - ./redis:/data
+    networks:
+      invoiceninja:
+        ipv4_address: 10.1.30.3
+
+  nginx:
+    container_name: ctr-invoiceninja-nginx
+    image: nginx:alpine
+    restart: unless-stopped
+    #ports:
+    #  - 80:80
+    volumes:
+      - ./nginx:/etc/nginx/conf.d:ro
+      - ./public:/var/www/html/public:ro
+      - ./storage:/var/www/html/storage:ro
+    networks:
+      invoiceninja:
+        ipv4_address: 10.1.30.4
+
+networks:
+  invoiceninja:
+    name: net-invoiceninja
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.30.0/24
+         gateway: 10.1.30.1
+  net-databases:
+    external: true
