@@ -1,0 +1,21 @@
+services:
+  termix:
+    container_name: ctr-termix
+    image: ghcr.io/lukegus/termix
+    restart: unless-stopped
+    #ports:
+    #  - "8080:8080"
+    volumes:
+      - ./data:/app/data
+    networks:
+      termix:
+        ipv4_address: 10.1.31.2
+
+networks:
+  termix:
+    name: net-termix
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.31.0/24
+         gateway: 10.1.31.1
