@@ -1,0 +1,23 @@
+services:
+  arcane-agent:
+    container_name: ctr-arcane-agent
+    image: ghcr.io/getarcaneapp/arcane-headless
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "3553:3553"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./data:/app/data
+    networks:
+      arcane-agent:
+        ipv4_address: 10.1.33.2
+
+networks:
+  arcane-agent:
+    name: net-arcane-agent
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.33.0/24
+         gateway: 10.1.33.1
