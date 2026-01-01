@@ -1,0 +1,27 @@
+services:
+  keycloak:
+    container_name: ctr-keycloak
+    image: quay.io/keycloak/keycloak
+    restart: unless-stopped
+    env_file: .env
+    command: start
+    #ports:
+    #  - "8080:8080"
+    volumes:
+      - ./themes:/opt/keycloak/themes
+      - ./providers:/opt/keycloak/providers
+    networks:
+      net-databases:
+      keycloak:
+        ipv4_address: 10.1.35.2
+
+networks:
+  keycloak:
+    name: net-keycloak
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.35.0/24
+         gateway: 10.1.35.1
+  net-databases:
+    external: true
