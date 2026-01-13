@@ -3,6 +3,7 @@ services:
     container_name: ctr-watchtower
     image: nickfedor/watchtower
     restart: unless-stopped
+    env_file: .env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
