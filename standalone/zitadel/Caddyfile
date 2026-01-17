@@ -1,0 +1,3 @@
+<DOMAIN> {
+    reverse_proxy <SERVICE_IP>:<SERVICE_PORT>
+}

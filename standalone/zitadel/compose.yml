@@ -1,0 +1,77 @@
+services:
+  zitadel:
+    container_name: ctr-zitadel
+    image: ghcr.io/zitadel/zitadel:latest
+    restart: unless-stopped
+    env_file: .env
+    user: "0"
+    command: start-from-init --masterkey "<SUPER_SECURE_32_CHARACTER_KEY>" # Generate with e.g.: tr -dc A-Za-z0-9 </dev/urandom | head -c 32
+    #ports:
+    #  - "8080:8080"
+    #  - "3000:3000"
+    volumes:
+      - .:/current-dir:delegated
+    healthcheck:
+      test:
+        - CMD
+        - /app/zitadel
+        - ready
+      interval: 10s
+      timeout: 60s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      zitadel:
+        ipv4_address: 10.1.36.2
+
+  login:
+    container_name: ctr-zitadel-login
+    image: ghcr.io/zitadel/zitadel-login:latest
+    restart: unless-stopped
+    env_file: .env
+    user: "0"
+    volumes:
+      - .:/current-dir:ro
+    # If you can't use the network_mode service:zitadel, you can pass the environment variables ZITADEL_API_URL=http://zitadel:8080 and CUSTOM_REQUEST_HEADERS=Host:localhost instead.
+    network_mode: service:zitadel
+    depends_on:
+      zitadel:
+        condition: service_healthy
+        restart: false
+
+  db:
+    container_name: ctr-zitadel-db
+    image: postgres:17
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready
+      - -d
+      - zitadel
+      - -U
+      - postgres
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 20s
+    networks:
+      zitadel:
+        ipv4_address: 10.1.36.3
+
+networks:
+  zitadel:
+    name: net-zitadel
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.36.0/24
+         gateway: 10.1.36.1

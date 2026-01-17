@@ -1,3 +1,4 @@
 <DOMAIN> {
-    reverse_proxy 10.1.35.2:8080
+    reverse_proxy /ui/v2/login/* http://10.1.36.2:3000
+    reverse_proxy h2c://10.1.36.2:8080
 }
