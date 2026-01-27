@@ -1,0 +1,36 @@
+services:
+  continuwuity:
+    container_name: ctr-continuwuity
+    image: forgejo.ellis.link/continuwuation/continuwuity
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "6167:6167"
+    volumes:
+      - ./data:/var/lib/continuwuity
+    networks:
+      continuwuity:
+        ipv4_address: 10.1.37.2
+
+
+  element:
+    container_name: ctr-continuwuity-element
+    image: vectorim/element-web
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "80:80"
+    volumes:
+      - ./config.json:/app/config.json
+    networks:
+      continuwuity:
+        ipv4_address: 10.1.37.3
+
+networks:
+  continuwuity:
+    name: net-continuwuity
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.37.0/24
+         gateway: 10.1.37.1

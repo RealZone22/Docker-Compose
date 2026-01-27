@@ -1,0 +1,53 @@
+matrix.example.test {
+    @wk path /.well-known/matrix/client
+    handle @wk {
+        header Content-Type application/json
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Headers "Authorization, Content-Type, Accept"
+        header Vary "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+        respond `{"m.server":{"base_url":"https://matrix.example.test"},"m.homeserver":{"base_url":"https://matrix.example.test"},"org.matrix.msc3575.proxy":{"url":"https://matrix.example.test"}}` 200
+    }
+
+    @wk_server path /.well-known/matrix/server
+    handle @wk_server {
+        header Content-Type application/json
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Headers "Authorization, Content-Type, Accept"
+        header Vary "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+        respond `{"m.server":"matrix.example.test:443"}` 200
+    }
+
+    reverse_proxy 10.1.37.2:6167
+}
+
+element.example.test {
+    @cfg path /config.json
+    handle @cfg {
+        header Content-Type application/json
+        header Cache-Control no-store
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Headers "Authorization, Content-Type, Accept"
+        header Vary "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+        respond `{
+            "default_server_config": {
+                "m.homeserver": {
+                    "base_url": "https://matrix.example.test",
+                    "server_name": "matrix.example.test"
+                }
+            },
+            "default_server_name": "matrix.example.test",
+            "disable_custom_urls": false,
+            "disable_guests": true,
+            "features": {
+                "feature_oidc_aware_navigation": true
+            }
+        }` 200
+    }
+
+    handle {
+        reverse_proxy 10.1.37.3:80
+    }
+}
