@@ -1,0 +1,49 @@
+chat.cyanfox.de {
+    # Matrix Client well-known
+    @wk_client path /.well-known/matrix/client
+    handle @wk_client {
+        header Content-Type application/json
+        respond `{
+            "m.server": { "base_url": "https://chat.cyanfox.de" },
+            "m.homeserver": { "base_url": "https://chat.cyanfox.de" },
+            "org.matrix.msc3575.proxy": { "url": "https://chat.cyanfox.de" }
+        }` 200
+    }
+
+    # Matrix Server well-known
+    @wk_server path /.well-known/matrix/server
+    handle @wk_server {
+        header Content-Type application/json
+        respond `{
+            "m.server": "chat.cyanfox.de:443"
+        }` 200
+    }
+
+    # Matrix API
+    @matrix path /_matrix/*
+    handle @matrix {
+        reverse_proxy 10.1.37.2:6167
+    }
+
+    # Element / Chat UI config
+    @cfg path /config.json
+    handle @cfg {
+        header Content-Type application/json
+        respond `{
+            "default_server_config": {
+                "m.homeserver": {
+                    "base_url": "https://chat.cyanfox.de",
+                    "server_name": "cyanfox.de"
+                }
+            },
+            "default_server_name": "chat.cyanfox.de",
+            "disable_custom_urls": false,
+            "disable_guests": true
+        }` 200
+    }
+
+    # Chat Frontend
+    handle {
+        reverse_proxy 10.1.37.3:80
+    }
+}
