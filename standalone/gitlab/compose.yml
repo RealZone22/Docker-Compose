@@ -1,0 +1,26 @@
+services:
+  gitlab:
+    container_name: ctr-gitlab
+    image: gitlab/gitlab-ee:latest # gitlab-ee or gitlab-ce for community edition and :nightly for latest nightly build
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "80:80"
+    #  - "443:443"
+    #  - "22:22"
+    volumes:
+      - ./config:/etc/gitlab
+      - ./logs:/var/log/gitlab
+      - ./data:/var/opt/gitlab
+    networks:
+      gitlab:
+        ipv4_address: 10.1.38.2
+
+networks:
+  gitlab:
+    name: net-gitlab
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.1.38.0/24
+          gateway: 10.1.38.1

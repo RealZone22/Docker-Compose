@@ -1,0 +1,7 @@
+<DOMAIN> {
+    reverse_proxy 10.1.38.2:443 {
+        transport http {
+            tls_insecure_skip_verify
+        }
+    }
+}
