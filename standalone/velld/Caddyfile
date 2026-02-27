@@ -1,0 +1,13 @@
+<DOMAIN> {
+    handle /api/config* {
+        reverse_proxy 10.1.40.3:3000
+    }
+
+    handle /api/* {
+        reverse_proxy 10.1.40.2:8080
+    }
+
+    handle {
+        reverse_proxy 10.1.40.3:3000
+    }
+}

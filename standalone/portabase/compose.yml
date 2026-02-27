@@ -1,0 +1,55 @@
+services:
+  portabase:
+    container_name: ctr-portabase
+    image: portabase/portabase:latest
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "80:80"
+    volumes:
+      #- str:/data/private/backups # If you want to use external storage for only the backups
+      - ./data:/data
+    networks:
+      portabase:
+        ipv4_address: 10.1.39.2
+
+  db:
+    container_name: ctr-portabase-db
+    image: postgres:17-alpine
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      portabase:
+        ipv4_address: 10.1.39.3
+
+  agent:
+    container_name: ctr-portabase-agent
+    image: portabase/agent:latest
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./databases.json:/data/config.json
+    extra_hosts:
+      - localhost:host-gateway
+    networks:
+      portabase:
+        ipv4_address: 10.1.39.4
+
+#volumes:
+#  str:
+#    driver: local
+#    driver_opts:
+#      type: cifs
+#      device: "//host/share"
+#      o: "username=username,password=password,uid=1000,gid=1000"
+
+networks:
+  portabase:
+    name: net-portabase
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.39.0/24
+         gateway: 10.1.39.1
