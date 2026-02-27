@@ -1,0 +1,23 @@
+services:
+  findmydevice:
+    container_name: ctr-findmydevice
+    image: registry.gitlab.com/fmd-foss/fmd-server:0.14.0 # latest tag is currently at 0.12.0 (2026-02-27)
+    restart: unless-stopped
+    user: root # If you have permission issues
+    #ports:
+    #  - "8080:8080"
+    volumes:
+      - ./data:/var/lib/fmd-server/db/
+      - ./config.yml:/etc/fmd-server/config.yml
+    networks:
+      findmydevice:
+        ipv4_address: 10.1.41.2
+
+networks:
+  findmydevice:
+    name: net-findmydevice
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.41.0/24
+         gateway: 10.1.41.1
