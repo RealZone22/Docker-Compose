@@ -1,0 +1,32 @@
+services:
+  backend:
+    container_name: ctr-excalidash-backend
+    image: zimengxiong/excalidash-backend:latest
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - 8000:8000
+    volumes:
+      - ./data:/app/prisma
+    networks:
+      excalidash:
+        ipv4_address: 10.1.42.2
+
+  frontend:
+    container_name: ctr-excalidash-frontend
+    image: zimengxiong/excalidash-frontend:latest
+    restart: unless-stopped
+    #ports:
+    #  - 80:80
+    networks:
+      excalidash:
+        ipv4_address: 10.1.42.3
+
+networks:
+  excalidash:
+    name: net-excalidash
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.42.0/24
+         gateway: 10.1.42.1
