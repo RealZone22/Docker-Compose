@@ -1,0 +1,22 @@
+services:
+  gotify:
+    container_name: ctr-gotify
+    image: gotify/server
+    restart: unless-stopped
+    #ports:
+    #  - "80:80"
+    volumes:
+      - ./data:/app/data
+      - ./config:/etc/gotify
+    networks:
+      gotify:
+        ipv4_address: 10.1.44.2
+
+networks:
+  gotify:
+    name: net-gotify
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.44.0/24
+         gateway: 10.1.44.1

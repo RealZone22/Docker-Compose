@@ -1,0 +1,36 @@
+services:
+  kener:
+    container_name: ctr-kener
+    image: rajnandan1/kener:alpine
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "3000:3000"
+    volumes:
+      - ./data:/app/database
+      - ./uploads:/app/uploads
+    networks:
+      net-databases:
+      kener:
+        ipv4_address: 10.1.43.2
+
+  redis:
+    container_name: ctr-redis
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - ./redis:/data
+    networks:
+      kener:
+        ipv4_address: 10.1.43.3
+
+networks:
+  kener:
+    name: net-kener
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.43.0/24
+         gateway: 10.1.43.1
+  net-databases:
+    external: true
