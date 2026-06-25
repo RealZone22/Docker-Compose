@@ -1,0 +1,25 @@
+services:
+  sftpgo:
+    container_name: ctr-sftpgo
+    image: registry.sftpgo.com/sftpgo/sftpgo:v2.7.20260528-plugins
+    restart: unless-stopped
+    env_file: .env
+    user: root
+    #ports:
+    #  - "8080:8080"
+    #  - "2022:2022"
+    volumes:
+      - ./data:/srv/sftpgo
+      - ./config:/var/lib/sftpgo
+    networks:
+      sftpgo:
+        ipv4_address: 10.1.45.2
+
+networks:
+  sftpgo:
+    name: net-sftpgo
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.45.0/24
+         gateway: 10.1.45.1
