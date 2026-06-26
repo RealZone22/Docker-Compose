@@ -1,0 +1,11 @@
+<DOMAIN> {
+    # Rewrites destination to remove host and include only the path e.g. /test.txt
+    @hasDest header_regexp dest ^https?://[^/]+(.*)$
+    header @hasDest Destination {re.dest.1}
+
+    # if running on the same network in docker you can just point to the service name e.g. webdav:6065
+    reverse_proxy 10.1.46.2:6065 {
+        header_up X-Real-IP {remote_host}
+        header_up REMOTE-HOST {remote_host}
+    }
+}

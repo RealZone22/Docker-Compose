@@ -1,0 +1,22 @@
+services:
+  webdav:
+    container_name: ctr-webdav
+    image: ghcr.io/hacdias/webdav
+    restart: unless-stopped
+    #ports:
+    #  - "6065:6065"
+    volumes:
+      - ./data:/data
+      - ./config.yml:/config.yml:ro
+    networks:
+      webdav:
+        ipv4_address: 10.1.46.2
+
+networks:
+  webdav:
+    name: net-webdav
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.46.0/24
+         gateway: 10.1.46.1
