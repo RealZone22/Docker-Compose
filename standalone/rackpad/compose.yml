@@ -1,0 +1,23 @@
+services:
+  rackpad:
+    container_name: ctr-rackpad
+    image: ghcr.io/kobii-git/rackpad
+    restart: unless-stopped
+    env_file: .env
+    user: root
+    #ports:
+    #  - "3000:3000"
+    volumes:
+      - ./data:/data
+    networks:
+      rackpad:
+        ipv4_address: 10.1.47.2
+
+networks:
+  rackpad:
+    name: net-rackpad
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.47.0/24
+         gateway: 10.1.47.1
