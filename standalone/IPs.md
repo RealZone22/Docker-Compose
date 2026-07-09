@@ -97,9 +97,12 @@
 | Semaphore   | 10.1.18.2   |
 
 ## Grafana
-| Service     | IP          |
-|-------------|-------------|
-| Grafana     | 10.1.19.2   |
+| Service           | IP          |
+|-------------------|-------------|
+| Grafana           | 10.1.19.2   |
+| Prometheus        | 10.1.19.3   |
+| Node Exporter     | 10.1.19.4   |
+| CAdvisor          | 10.1.19.5   |
 
 ## Pingvin
 | Service     | IP          |
