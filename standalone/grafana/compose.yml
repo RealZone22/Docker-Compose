@@ -27,37 +27,53 @@ services:
       grafana:
         ipv4_address: 10.1.19.3
 
-  node-exporter:
-    image: prom/node-exporter
-    #ports:
-    #  - "127.0.0.1:9100:9100"
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-    networks:
-      grafana:
-        ipv4_address: 10.1.19.4
+#  node-exporter:
+#    container_name: ctr-grafana-node-exporter
+#    image: prom/node-exporter
+#    #ports:
+#    #  - "9100:9100"
+#    restart: unless-stopped
+#    volumes:
+#      - /proc:/host/proc:ro
+#      - /sys:/host/sys:ro
+#      - /:/rootfs:ro
+#    command:
+#      - '--path.procfs=/host/proc'
+#      - '--path.sysfs=/host/sys'
+#      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+#    networks:
+#      grafana:
+#        ipv4_address: 10.1.19.4
 
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor
-    #ports:
-    #  - "127.0.0.1:8080:8080"
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker:/var/lib/docker:ro
-    privileged: true
-    devices:
-      - /dev/kmsg
-    networks:
-      grafana:
-        ipv4_address: 10.1.19.5
+#  cadvisor:
+#    container_name: ctr-grafana-cadvisor
+#    image: gcr.io/cadvisor/cadvisor
+#    #ports:
+#    #  - "8080:8080"
+#    restart: unless-stopped
+#    volumes:
+#      - /:/rootfs:ro
+#      - /var/run:/var/run:ro
+#      - /sys:/sys:ro
+#      - /var/lib/docker:/var/lib/docker:ro
+#    privileged: true
+#    devices:
+#      - /dev/kmsg
+#    networks:
+#      grafana:
+#        ipv4_address: 10.1.19.5
+
+#  mysqld-exporter:
+#    container_name: ctr-grafana-mysqld-exporter
+#    image: prom/mysqld-exporter
+#    restart: unless-stopped
+#    volumes:
+#      - ./.my.cnf:/.my.cnf
+#    #ports:
+#    #  - "9104:9104"
+#    networks:
+#      grafana:
+#        ipv4_address: 10.1.19.6
 
 networks:
   grafana:

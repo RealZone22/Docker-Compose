@@ -103,6 +103,7 @@
 | Prometheus        | 10.1.19.3   |
 | Node Exporter     | 10.1.19.4   |
 | CAdvisor          | 10.1.19.5   |
+| Mysqld Exporter   | 10.1.19.6   |
 
 ## Pingvin
 | Service     | IP          |
