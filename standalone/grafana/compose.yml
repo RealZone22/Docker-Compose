@@ -21,7 +21,7 @@ services:
     #ports:
     #  - "9090:9090"
     volumes:
-      - ./data:/prometheus
+      - ./prometheus:/prometheus
       - ./config:/etc/prometheus/
     networks:
       grafana:
