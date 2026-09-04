@@ -4,6 +4,8 @@ services:
     image: penpotapp/frontend
     restart: unless-stopped
     env_file: .env
+    volumes:
+      - ./assets:/opt/data/assets
     #ports:
     #  - "8080:8080"
     networks:
