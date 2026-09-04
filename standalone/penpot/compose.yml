@@ -1,0 +1,60 @@
+services:
+  frontend:
+    container_name: ctr-penpot-frontend
+    image: penpotapp/frontend
+    restart: unless-stopped
+    env_file: .env
+    #ports:
+    #  - "8080:8080"
+    networks:
+      penpot:
+        ipv4_address: 10.1.48.2
+
+  backend:
+    container_name: ctr-penpot-backend
+    image: penpotapp/backend
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./assets:/opt/data/assets
+    networks:
+      penpot:
+        ipv4_address: 10.1.48.3
+
+  exporter:
+    container_name: ctr-penpot-exporter
+    image: penpotapp/exporter
+    restart: unless-stopped
+    env_file: .env
+    networks:
+      penpot:
+        ipv4_address: 10.1.48.4
+
+  postgres:
+    container_name: ctr-penpot-postgres
+    image: postgres:15
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      penpot:
+        ipv4_address: 10.1.48.5
+
+  valkey:
+    container_name: ctr-penpot-valkey
+    image: valkey/valkey:8.1
+    restart: unless-stopped
+    env_file: .env
+    networks:
+      penpot:
+        ipv4_address: 10.1.48.6
+
+networks:
+  penpot:
+    name: net-penpot
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.48.0/24
+         gateway: 10.1.48.1
