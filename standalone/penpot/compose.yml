@@ -15,6 +15,7 @@ services:
     image: penpotapp/backend
     restart: unless-stopped
     env_file: .env
+    user: root
     volumes:
       - ./assets:/opt/data/assets
     networks:
