@@ -21,7 +21,7 @@ services:
       - ./redis:/data
     networks:
       mastodon:
-        ipv4_address: 10.1.48.1
+        ipv4_address: 10.1.48.2
 
   es:
     restart: always
@@ -42,7 +42,7 @@ services:
     #  - 9200:9200
     networks:
       mastodon:
-        ipv4_address: 10.1.48.1
+        ipv4_address: 10.1.48.3
 
   web:
     image: ghcr.io/mastodon/mastodon:v4.7.3
@@ -61,7 +61,7 @@ services:
       - ./public/system:/mastodon/public/system
     networks:
       mastodon:
-        ipv4_address: 10.1.48.1
+        ipv4_address: 10.1.48.4
 
   streaming:
     image: ghcr.io/mastodon/mastodon-streaming:v4.7.3
@@ -77,7 +77,7 @@ services:
       - redis
     networks:
       mastodon:
-        ipv4_address: 10.1.48.1
+        ipv4_address: 10.1.48.5
 
   sidekiq:
     image: ghcr.io/mastodon/mastodon:v4.7.3
@@ -93,7 +93,7 @@ services:
       test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 8' || false"]
     networks:
       mastodon:
-        ipv4_address: 10.1.48.1
+        ipv4_address: 10.1.48.6
 
 networks:
   mastodon:
