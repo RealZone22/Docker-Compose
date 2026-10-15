@@ -10,7 +10,7 @@ services:
     env_file: .env
     networks:
       mastodon:
-        ipv4_address: 10.1.48.1
+        ipv4_address: 10.1.48.2
 
   redis:
     restart: always
@@ -21,11 +21,11 @@ services:
       - ./redis:/data
     networks:
       mastodon:
-        ipv4_address: 10.1.48.2
+        ipv4_address: 10.1.48.3
 
   es:
     restart: always
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.19.15
+    image: docker.elastic.co/elasticsearch/elasticsearch
     env_file: .env
     healthcheck:
        test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
@@ -42,10 +42,10 @@ services:
     #  - 9200:9200
     networks:
       mastodon:
-        ipv4_address: 10.1.48.3
+        ipv4_address: 10.1.48.4
 
   web:
-    image: ghcr.io/mastodon/mastodon:v4.7.3
+    image: ghcr.io/mastodon/mastodon
     restart: always
     env_file: .env
     command: bundle exec puma -C config/puma.rb
@@ -61,10 +61,10 @@ services:
       - ./public/system:/mastodon/public/system
     networks:
       mastodon:
-        ipv4_address: 10.1.48.4
+        ipv4_address: 10.1.48.5
 
   streaming:
-    image: ghcr.io/mastodon/mastodon-streaming:v4.7.3
+    image: ghcr.io/mastodon/mastodon-streaming
     restart: always
     env_file: .env
     command: node ./streaming/index.js
@@ -77,10 +77,10 @@ services:
       - redis
     networks:
       mastodon:
-        ipv4_address: 10.1.48.5
+        ipv4_address: 10.1.48.6
 
   sidekiq:
-    image: ghcr.io/mastodon/mastodon:v4.7.3
+    image: ghcr.io/mastodon/mastodon
     restart: always
     env_file: .env
     command: bundle exec sidekiq
@@ -93,7 +93,7 @@ services:
       test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 8' || false"]
     networks:
       mastodon:
-        ipv4_address: 10.1.48.6
+        ipv4_address: 10.1.48.7
 
 networks:
   mastodon:
