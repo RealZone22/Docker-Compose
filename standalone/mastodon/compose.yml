@@ -1,36 +1,31 @@
 services:
-  db:
-    restart: always
-    image: postgres:14-alpine
-    shm_size: 256mb
-    healthcheck:
-      test: ['CMD', 'pg_isready', '-U', 'postgres']
-    volumes:
-      - ./db:/var/lib/postgresql/data
+  mastodon:
+    image: lscr.io/linuxserver/mastodon:latest
+    container_name: ctr-mastodon
     env_file: .env
+    volumes:
+      - ./config:/config
+    #ports:
+    #  - 80:80
+    #  - 443:443
+    #  - 9394:9394 # Prometheus
+    restart: unless-stopped
     networks:
       mastodon:
         ipv4_address: 10.1.48.2
 
-  redis:
-    restart: always
-    image: redis:7-alpine
-    healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-    volumes:
-      - ./redis:/data
-    networks:
-      mastodon:
-        ipv4_address: 10.1.48.3
-
-  es:
-    restart: always
+  elasticsearch:
+    container_name: ctr-mastodon-elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:8.19.15
+    restart: unless-stopped
     env_file: .env
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
     healthcheck:
        test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
     volumes:
-       - ./elasticsearch:/usr/share/elasticsearch/data
+       - ./elasticsearch:/usr/share/elasticsearch/data # chown -R 1000:1000 ./elasticsearch
     ulimits:
       memlock:
         soft: -1
@@ -42,58 +37,33 @@ services:
     #  - 9200:9200
     networks:
       mastodon:
+        ipv4_address: 10.1.48.3
+
+  postgres:
+    container_name: ctr-mastodon-postgres
+    image: postgres:14-alpine
+    restart: unless-stopped
+    shm_size: 256mb
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'postgres']
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    env_file: .env
+    networks:
+      mastodon:
         ipv4_address: 10.1.48.4
 
-  web:
-    image: ghcr.io/mastodon/mastodon
-    restart: always
-    env_file: .env
-    command: bundle exec puma -C config/puma.rb
+  redis:
+    container_name: ctr-mastodon-redis
+    image: redis:7-alpine
+    restart: unless-stopped
     healthcheck:
-      test: ['CMD-SHELL',"curl -s --noproxy localhost localhost:3000/health | grep -q 'OK' || exit 1"]
-    #ports:
-    #  - 3000:3000
-    depends_on:
-      - db
-      - redis
-      - es
+      test: ['CMD', 'redis-cli', 'ping']
     volumes:
-      - ./public/system:/mastodon/public/system
+      - ./redis:/data
     networks:
       mastodon:
         ipv4_address: 10.1.48.5
-
-  streaming:
-    image: ghcr.io/mastodon/mastodon-streaming
-    restart: always
-    env_file: .env
-    command: node ./streaming/index.js
-    healthcheck:
-      test: ['CMD-SHELL', "curl -s --noproxy localhost localhost:4000/api/v1/streaming/health | grep -q 'OK' || exit 1"]
-    #ports:
-    #  - 4000:4000
-    depends_on:
-      - db
-      - redis
-    networks:
-      mastodon:
-        ipv4_address: 10.1.48.6
-
-  sidekiq:
-    image: ghcr.io/mastodon/mastodon
-    restart: always
-    env_file: .env
-    command: bundle exec sidekiq
-    depends_on:
-      - db
-      - redis
-    volumes:
-      - ./public/system:/mastodon/public/system
-    healthcheck:
-      test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 8' || false"]
-    networks:
-      mastodon:
-        ipv4_address: 10.1.48.7
 
 networks:
   mastodon:
