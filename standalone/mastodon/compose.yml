@@ -6,7 +6,7 @@ services:
     healthcheck:
       test: ['CMD', 'pg_isready', '-U', 'postgres']
     volumes:
-      - ./postgres14:/var/lib/postgresql/data
+      - ./db:/var/lib/postgresql/data
     env_file: .env
     networks:
       mastodon:
