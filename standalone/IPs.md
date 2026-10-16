@@ -270,9 +270,7 @@
 ## Mastodon
 | Service       | IP          |
 |---------------|-------------|
-| db            | 10.1.48.2   |
-| redis         | 10.1.48.3   |
-| es            | 10.1.48.4   |
-| web           | 10.1.48.5   |
-| streaming     | 10.1.48.6   |
-| sidekiq       | 10.1.48.7   |
+| mastodon      | 10.1.48.2   |
+| elasticsearch | 10.1.48.3   |
+| postgres      | 10.1.48.4   |
+| redis         | 10.1.48.5   |
