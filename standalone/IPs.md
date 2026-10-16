@@ -266,3 +266,11 @@
 | Service       | IP          |
 |---------------|-------------|
 | rackpad       | 10.1.47.2   |
+
+## Mastodon
+| Service       | IP          |
+|---------------|-------------|
+| mastodon      | 10.1.48.2   |
+| elasticsearch | 10.1.48.3   |
+| postgres      | 10.1.48.4   |
+| redis         | 10.1.48.5   |

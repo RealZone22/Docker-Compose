@@ -1,0 +1,75 @@
+services:
+  mastodon:
+    image: lscr.io/linuxserver/mastodon:latest
+    container_name: ctr-mastodon
+    env_file: .env
+    volumes:
+      - ./config:/config
+    #ports:
+    #  - 80:80
+    #  - 443:443
+    #  - 9394:9394 # Prometheus
+    restart: unless-stopped
+    networks:
+      mastodon:
+        ipv4_address: 10.1.48.2
+
+  elasticsearch:
+    container_name: ctr-mastodon-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.19.15
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+    healthcheck:
+       test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+    volumes:
+       - ./elasticsearch:/usr/share/elasticsearch/data # chown -R 1000:1000 ./elasticsearch
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    #ports:
+    #  - 9200:9200
+    networks:
+      mastodon:
+        ipv4_address: 10.1.48.3
+
+  postgres:
+    container_name: ctr-mastodon-postgres
+    image: postgres:14-alpine
+    restart: unless-stopped
+    shm_size: 256mb
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'postgres']
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    env_file: .env
+    networks:
+      mastodon:
+        ipv4_address: 10.1.48.4
+
+  redis:
+    container_name: ctr-mastodon-redis
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+    volumes:
+      - ./redis:/data
+    networks:
+      mastodon:
+        ipv4_address: 10.1.48.5
+
+networks:
+  mastodon:
+    name: net-mastodon
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.48.0/24
+         gateway: 10.1.48.1
